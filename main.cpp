@@ -13,11 +13,29 @@
  *   in angle brackets (e.g., <expression>, <statement>).
  * - terminal symbols: fixed elements such as keywords, punctuation.
  * - derivation rules: define how non-terminal symbols can be replaced with terminal symbols or other
+ *
+ * Simplified BNF grammar:
+ * expression:
+ *     term
+ *     expression + term
+ *     expression - term
+ *
+ * term:
+ *     primary
+ *     primary * term
+ *     primary / term
+ *
+ * primary:
+ *     number
+ *     ( expression )
+ *     - primary
  */
 
 #include <iostream>
+#include "token.hpp"
 
 using namespace std;
+
 
 class Calculator {
     public:
