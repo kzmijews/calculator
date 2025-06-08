@@ -20,5 +20,5 @@ private:
 public:
     TokenStream(): full(false), buffer(Token()) {};
     Token pop();
-    void push();
+    void push(Token token);
 };

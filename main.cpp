@@ -48,7 +48,9 @@ int Calculator::calculate(int a, int b) {
 
 
 int main() {
-    cout << "Hello world" << endl;
-    cout << "add(2, 3) = " << Calculator().calculate(2, 3) << endl;
+    cout << "Calculator" << endl;
+    TokenStream ts;
+    Token token = ts.pop();
+    cout << "Token kind: " << token.getKind() << ", value: " << token.getValue() << endl;
     return 0;
 }

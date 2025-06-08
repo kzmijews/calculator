@@ -40,6 +40,6 @@ Token TokenStream::pop() {
     }
 }
 
-void TokenStream::push() {
+void TokenStream::push(Token token) {
     // todo: stubbed
 }
