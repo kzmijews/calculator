@@ -8,15 +8,18 @@ double Grammar::expression() {
     double lvalue = term();
     TokenStream ts;
     Token token = ts.pop();
-    while (token.getKind() == '+' || token.getKind() == '-') {
-        if (token.getKind() == '+') {
+    char token_kind = token.getKind();
+    while (token_kind == '+' || token_kind == '-') {
+        if (token_kind == '+') {
             lvalue += term();
-        } else if (token.getKind() == '-') {
+        } else if (token_kind == '-') {
             lvalue -= term();
         }
-        token = ts.pop(); // Get the next token
+        // Get the next token
+        token = ts.pop();
     }
-    ts.push(token); // Push back the last token for further processing
+    // Push back the last token for further processing
+    ts.push(token);
     return lvalue;
 }
 
@@ -24,10 +27,11 @@ double Grammar::term() {
     double lvalue = primary();
     TokenStream ts;
     Token token = ts.pop();
-    while (token.getKind() == '*' || token.getKind() == '/') {
-        if (token.getKind() == '*') {
+    char token_kind = token.getKind();
+    while (token_kind == '*' || token_kind == '/') {
+        if (token_kind == '*') {
             lvalue *= primary();
-        } else if (token.getKind() == '/') {
+        } else if (token_kind == '/') {
             double divisor = primary();
             if (divisor == 0) {
                 cerr << "Error: division by zero" << endl;
@@ -35,9 +39,11 @@ double Grammar::term() {
             }
             lvalue /= divisor;
         }
-        token = ts.pop(); // Get the next token
+        // Get the next token
+        token = ts.pop();
     }
-    ts.push(token); // Push back the last token for further processing
+    // Push back the last token for further processing
+    ts.push(token);
     return lvalue;
 }
 
@@ -45,20 +51,25 @@ double Grammar::primary() {
     TokenStream ts;
     Token token = ts.pop();
     switch (token.getKind()) {
-        case '8': // Number
+        // Number
+        case '8':
             return token.getValue();
-        case '(': // Left parenthesis
+        // Left parenthesiss
+        case '(': {
             double lvalue = expression();
-            token = ts.pop(); // Expecting a right parenthesis
+            // Expecting a right parenthesis
+            token = ts.pop();
             if (token.getKind() != ')') {
                 cerr << "Error: expected ')'" << endl;
-                exit(1);
+                return 0.0; // Return 0.0 for error
             }
             return lvalue;
-        case '-': // Unary minus
+        }
+        // Unary minus
+        case '-':
             return -primary();
         default:
             cerr << "Error: unexpected token '" << token.getKind() << "'" << endl;
-            exit(1);
+            return 0.0; // Return 0.0 for unexpected tokens
     }
 }

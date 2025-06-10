@@ -21,14 +21,13 @@ Token TokenStream::pop() {
     }
     char sign = 0;
     cin >> sign;
+    cout << "[DEBUG] TokenStream::pop() - read sign: '" << sign << "'" << endl;
     switch (sign) {
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9':
         case '.': {
-            cin.putback(sign);
-            double value;
-            cin >> value;
-            return Token('8', value); // Assuming '8' is the kind for numbers, todo: change it to enum
+            //cin.putback(sign);
+            return Token('8', sign); // Assuming '8' is the kind for numbers, todo: change it to enum
         }
         case '+': case '-':
         case '*': case '/':
@@ -41,5 +40,10 @@ Token TokenStream::pop() {
 }
 
 void TokenStream::push(Token token) {
-    // todo: stubbed
+    if (full) {
+        cerr << "TokenStream buffer is full, cannot push token." << endl;
+    } else {
+        full = true;
+        buffer = token;
+    }
 }

@@ -33,9 +33,9 @@
 
 #include <iostream>
 #include "token.hpp"
+#include "grammar.hpp"
 
 using namespace std;
-
 
 class Calculator {
     public:
@@ -46,11 +46,14 @@ int Calculator::calculate(int a, int b) {
     return a + b;
 }
 
-
 int main() {
     cout << "Calculator" << endl;
     TokenStream ts;
-    Token token = ts.pop();
-    cout << "Token kind: " << token.getKind() << ", value: " << token.getValue() << endl;
+    Grammar grammar;
+    cout << "Enter expression (or 'q' to quit): ";
+    while(true) {
+        double value = grammar.expression();
+        cout << "Result: " << value << endl;
+    }
     return 0;
 }

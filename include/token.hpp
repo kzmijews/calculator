@@ -3,7 +3,7 @@ private:
     char kind;
     double value;
 public:
-    Token(char kind = 0, double value = 0.0): kind(kind), value(value) {}
+    Token(char kind = 0, double value = 0.0): kind(kind), value(static_cast<double>(value)) {}
     char getKind() const { return kind; }
     double getValue() const { return value; }
     bool isNumber() const { return kind == '8'; } // Assuming '8' is the kind for numbers
