@@ -33,27 +33,76 @@
 
 #include <iostream>
 #include "token.hpp"
-#include "grammar.hpp"
+#include "calculator.hpp"
 
 using namespace std;
 
-class Calculator {
-    public:
-        int calculate(int a, int b);
-};
 
-int Calculator::calculate(int a, int b) {
-    return a + b;
+Calculator::Calculator() {
+    ts = TokenStream();
 }
 
-int main() {
-    cout << "Calculator" << endl;
-    TokenStream ts;
-    Grammar grammar;
-    cout << "Enter expression (or 'q' to quit): ";
-    while(true) {
-        double value = grammar.expression();
-        cout << "Result: " << value << endl;
+double Calculator::expression() {
+    double lvalue = term();
+    Token token = ts.pop();
+    char token_kind = token.getKind();
+    if (token_kind == '+') {
+        lvalue += term();
+    } else if (token_kind == '-') {
+        lvalue -= term();
+    } else {
+        // If the token is not an operator, push it back to the stream
+        // for further processing
+        ts.push(token);
     }
-    return 0;
+    return lvalue;
+}
+
+double Calculator::term() {
+    double lvalue = primary();
+    //TokenStream ts;
+    Token token = ts.pop();
+    char token_kind = token.getKind();
+    if (token_kind == '*') {
+        lvalue *= primary();
+    } else if (token_kind == '/') {
+        double divisor = primary();
+        if (divisor == 0) {
+            cerr << "Error: division by zero" << endl;
+            exit(1);
+        }
+        lvalue /= divisor;
+    } else {
+        // If the token is not an operator, push it back to the stream
+        // for the further processing
+        ts.push(token);
+    }
+    return lvalue;
+}
+
+double Calculator::primary() {
+    //TokenStream ts;
+    Token token = ts.pop();
+    switch (token.getKind()) {
+        // Number
+        case '8':
+            return token.getValue();
+        // Left parenthesiss
+        case '(': {
+            double lvalue = expression();
+            // Expecting a right parenthesis
+            token = ts.pop();
+            if (token.getKind() != ')') {
+                cerr << "Error: expected ')'" << endl;
+                return 0.0; // Return 0.0 for error
+            }
+            return lvalue;
+        }
+        // Unary minus
+        case '-':
+            return -primary();
+        default:
+            cerr << "Error: unexpected token '" << token.getKind() << "'" << endl;
+            return 0.0; // Return 0.0 for unexpected tokens
+    }
 }

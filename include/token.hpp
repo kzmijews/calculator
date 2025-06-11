@@ -1,3 +1,6 @@
+#ifndef TOKEN_H
+#define TOKEN_H
+
 class Token {
 private:
     char kind;
@@ -22,3 +25,5 @@ public:
     Token pop();
     void push(Token token);
 };
+
+#endif /* !TOKEN_H! */
