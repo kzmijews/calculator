@@ -8,7 +8,7 @@
             "type": "cppdbg",
             "name": "Debug",
             "request": "launch",
-            "program": "${workspaceFolder}/calculator",
+            "program": "${workspaceFolder}/build/debug/bin/calculator",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -22,7 +22,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build"
+            "preLaunchTask": "CMake Build [Debug]"
         }
     ]
 }
