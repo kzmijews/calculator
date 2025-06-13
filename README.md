@@ -15,3 +15,8 @@ Using CMake directly:
 cmake -S . -B ./build/debug -DCMAKE_BUILD_TYPE=Debug"
 cmake --build ./build/debug" --config "Debug"
 ```
+
+# Run
+```bash
+./build/release/bin/calculator
+```

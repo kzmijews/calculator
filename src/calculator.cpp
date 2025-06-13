@@ -1,8 +1,4 @@
 /**
- * @file main.cpp
- * @brief Main file for the calculator project.
- * @version 0.1
- * @date 2025-06-07
  * Context-Free Gramar (CFG) example. Set of rules defining correct expression and instruction syntax.
  * Based on BNF (Backus-Naur Form) - notation system for defining the syntax of programming languages
  * and other formal languages. It's a meta-syntax for context-free grammars, providing a precise way
@@ -32,7 +28,9 @@
  */
 
 #include <iostream>
+#include <string>
 #include "token.hpp"
+#include "exceptions.hpp"
 #include "calculator.hpp"
 
 using namespace std;
@@ -45,10 +43,10 @@ Calculator::Calculator() {
 double Calculator::expression() {
     double lvalue = term();
     Token token = ts.pop();
-    char token_kind = token.getKind();
-    if (token_kind == '+') {
+    TokenType token_kind = token.getType();
+    if (token_kind == TokenType::PLUS) {
         lvalue += term();
-    } else if (token_kind == '-') {
+    } else if (token_kind == TokenType::MINUS) {
         lvalue -= term();
     } else {
         // If the token is not an operator, push it back to the stream
@@ -60,16 +58,14 @@ double Calculator::expression() {
 
 double Calculator::term() {
     double lvalue = primary();
-    //TokenStream ts;
     Token token = ts.pop();
-    char token_kind = token.getKind();
-    if (token_kind == '*') {
+    TokenType token_kind = token.getType();
+    if (token_kind == TokenType::MULTIPLY) {
         lvalue *= primary();
-    } else if (token_kind == '/') {
+    } else if (token_kind == TokenType::DIVIDE) {
         double divisor = primary();
         if (divisor == 0) {
-            cerr << "Error: division by zero" << endl;
-            exit(1);
+            throw InvalidExpression("Division by zero is not allowed.");
         }
         lvalue /= divisor;
     } else {
@@ -81,28 +77,30 @@ double Calculator::term() {
 }
 
 double Calculator::primary() {
-    //TokenStream ts;
     Token token = ts.pop();
-    switch (token.getKind()) {
+    auto token_value = etov(token.getType());
+    switch (token_value) {
         // Number
-        case '8':
+        case etov(TokenType::NUMBER):
             return token.getValue();
         // Left parenthesiss
-        case '(': {
+        case etov(TokenType::LEFT_PAREN): {
             double lvalue = expression();
             // Expecting a right parenthesis
             token = ts.pop();
-            if (token.getKind() != ')') {
-                cerr << "Error: expected ')'" << endl;
-                return 0.0; // Return 0.0 for error
+            if (token.getType() != TokenType::RIGHT_PAREN) {
+                throw InvalidExpression("Expected right parenthesis: ')'");
             }
             return lvalue;
         }
         // Unary minus
-        case '-':
+        case etov(TokenType::MINUS):
             return -primary();
+        case etov(TokenType::END):
+            throw EndOfExpression(); // End of expression, no more tokens to process
+        case etov(TokenType::QUIT):
+            throw EndOfExecution(); // Quit command, end the expression processing
         default:
-            cerr << "Error: unexpected token '" << token.getKind() << "'" << endl;
-            return 0.0; // Return 0.0 for unexpected tokens
+            throw  InvalidExpression("Unexpected token: '" + to_string(token_value) + "'");
     }
 }

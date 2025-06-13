@@ -3,6 +3,7 @@
 
 using namespace std;
 
+
 /**
  * TokenStream class implementation.
  * This class is responsible for reading tokens from the input stream and managing a buffer for tokens.
@@ -19,9 +20,6 @@ Token TokenStream::pop() {
         full = false;
         return buffer;
     }
-    if (cin.peek() == '\n') {
-        return Token(); // Return an end token if the input stream is empty
-    }
     char sign = 0;
     cin >> sign;
     switch (sign) {
@@ -31,13 +29,12 @@ Token TokenStream::pop() {
             cin.putback(sign);
             double value;
             cin >> value; // it will read each digit until it reaches a non-digit character and return whole number
-            cout << "[DEBUG] TokenStream::pop() - read: '" << value << "'" << endl;
-            return Token('8', value); // Assuming '8' is the kind for numbers, todo: change it to enum
+            return Token(TokenType::NUMBER, value); // Assuming '8' is the kind for numbers, todo: change it to enum
         }
         case '+': case '-':
         case '*': case '/':
         case '(': case ')':
-            cout << "[DEBUG] TokenStream::pop() - read: '" << sign << "'" << endl;
+        case ';': case 'q':
             return Token(sign);
         default:
             cerr << "unknown token: " << sign << endl;
@@ -52,4 +49,16 @@ void TokenStream::push(Token token) {
         full = true;
         buffer = token;
     }
+}
+
+Token TokenStream::peek() const {
+    if (cin.peek()) {
+        return Token(cin.get());
+    }
+    return Token(TokenType::UNKNOWN);
+}
+
+void TokenStream::clean() {
+    full = false; // Clear the buffer
+    buffer = Token(); // Reset the buffer token
 }
