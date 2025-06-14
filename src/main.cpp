@@ -7,11 +7,11 @@
 
 using namespace std;
 
-int main() {
+
+int interactiveMode() {
     CLITokenStream clits;
     Calculator calculator(clits);
     double value = 0.0;
-    cout << "CALCULATOR" << endl;
     cout << "Enter expression (or q to quit): " << endl;
     cout << "> ";
     while (true) {
@@ -44,4 +44,45 @@ int main() {
         }
     }
     return 0;
+}
+
+
+int main(int argc, char* argv[]) {
+    // Set up command line options
+    cxxopts::Options options("Calculator", "A simple calculator application");
+    options.add_options()
+        ("h,help", "Show help")
+        ("v,version", "Show version")
+        ("q,quit", "Quit the calculator")
+        ("i,interactive", "Launch in interactive mode");
+    options.add_options("Expression")
+        ("e,expression", "Expression to evaluate", cxxopts::value<std::string>());
+    auto args = options.parse(argc, argv);
+    // -- Help
+    if (args.count("help")) {
+        cout << options.help() << std::endl;
+        return 0;
+    }
+    // -- Version
+    if (args.count("version")) {
+        cout << "Calculator version: 1.0.0" << std::endl;
+        return 0;
+    }
+    // -- Quit
+    if (args.count("quit")) {
+        cout << "Exiting calculator." << std::endl;
+        return 0;
+    }
+    // -- Interactive mode
+    if (args.count("interactive")) {
+        cout << "Launching calculator in interactive mode." << std::endl;
+        return interactiveMode();
+    } else if (args.count("expression")) {
+        // -- Expression mode
+        // TODO: Implement expression evaluation
+        std::string expression = args["expression"].as<std::string>();
+        return 1;
+    }
+    cout << "No expression provided. Use -h or --help for usage information." << std::endl;
+    return 1;
 }
