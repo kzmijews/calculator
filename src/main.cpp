@@ -1,4 +1,5 @@
 #include <iostream>
+#include "cxxopts.hpp"
 #include "token.hpp"
 #include "clitstream.hpp"
 #include "calculator.hpp"

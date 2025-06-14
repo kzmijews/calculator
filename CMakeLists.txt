@@ -29,6 +29,7 @@ endif()
 include_directories(
   ${CMAKE_SOURCE_DIR}/include/core
   ${CMAKE_SOURCE_DIR}/include/iface
+  ${CMAKE_SOURCE_DIR}/include/cxxopts
 )
 # -- source files
 file(
