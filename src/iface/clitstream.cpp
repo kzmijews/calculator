@@ -1,21 +1,19 @@
 #include <iostream>
 #include "token.hpp"
+#include "clitstream.hpp"
 
 using namespace std;
-
 
 /**
  * TokenStream class implementation.
  * This class is responsible for reading tokens from the input stream and managing a buffer for tokens.
  * It can pop a token from the input or push a token back into the buffer.
- * TODO: Implement the push method to handle token buffering correctly.
  * TODO: Handle errors and unexpected input more gracefully.
  * TODO: Consider using a more robust input method for token parsing, such as regex or a lexer.
  * TODO: Add support for more token types and operators as needed.
- * TODO: Add enum types for token kinds to improve readability and maintainability.
  * TODO: Split token reading logic from token parsing logic for better separation of concerns.
  */
-Token TokenStream::pop() {
+Token CLITokenStream::pop() {
     if (full) {
         full = false;
         return buffer;
@@ -29,7 +27,7 @@ Token TokenStream::pop() {
             cin.putback(sign);
             double value;
             cin >> value; // it will read each digit until it reaches a non-digit character and return whole number
-            return Token(TokenType::NUMBER, value); // Assuming '8' is the kind for numbers, todo: change it to enum
+            return Token(TokenType::NUMBER, value);
         }
         case '+': case '-':
         case '*': case '/':
@@ -37,12 +35,11 @@ Token TokenStream::pop() {
         case ';': case 'q':
             return Token(sign);
         default:
-            cerr << "unknown token: " << sign << endl;
-            return Token();
+            return Token(TokenType::UNKNOWN);
     }
 }
 
-void TokenStream::push(Token token) {
+void CLITokenStream::push(Token token) {
     if (full) {
         cerr << "TokenStream buffer is full, cannot push token." << endl;
     } else {
@@ -51,14 +48,14 @@ void TokenStream::push(Token token) {
     }
 }
 
-Token TokenStream::peek() const {
+Token CLITokenStream::peek() const {
     if (cin.peek()) {
         return Token(cin.get());
     }
     return Token(TokenType::UNKNOWN);
 }
 
-void TokenStream::clean() {
-    full = false; // Clear the buffer
-    buffer = Token(); // Reset the buffer token
+void CLITokenStream::clean() {
+    full = false;
+    buffer = Token();
 }

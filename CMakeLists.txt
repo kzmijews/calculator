@@ -26,9 +26,17 @@ else()
   add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
 # -- include directories
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(
+  ${CMAKE_SOURCE_DIR}/include/core
+  ${CMAKE_SOURCE_DIR}/include/iface
+)
 # -- source files
-file(GLOB SOURCES "src/*.cpp")
+file(
+  GLOB SOURCES
+  "src/*.cpp"
+  "src/core/*.cpp"
+  "src/iface/*.cpp"
+)
 # -- executable target
 add_executable(calculator ${SOURCES})
 # -- link libraries
@@ -38,10 +46,12 @@ else()
   target_link_libraries(calculator PRIVATE m)
 endif()
 # -- install rules
-install(TARGETS calculator
+install(
+  TARGETS calculator
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib)
+  ARCHIVE DESTINATION lib
+)
 # -- packaging
 set(CPACK_GENERATOR "ZIP")
 set(CPACK_PACKAGE_NAME "calculator")

@@ -2,12 +2,13 @@
 #define CALCULATOR_H
 
 #include "token.hpp"
+#include "itstream.hpp"
 
 class Calculator {
     private:
-        TokenStream ts;
+        ITokenStream& ts;
     public:
-        Calculator();
+        Calculator(ITokenStream& inputStream) : ts(inputStream) {};
         ~Calculator() = default;
         double expression();
         double term();

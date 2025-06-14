@@ -10,12 +10,6 @@ class InvalidExpression : public std::exception {
 private:
     string message;
 public:
-    /**
-     * Constructor with a default message
-     * Allows the user to specify a custom message
-     * explicite - prevents implicit conversions
-     * @param msg Custom error message
-     */ 
     InvalidExpression(const string& msg);
     virtual ~InvalidExpression() = default;
     const char* what() const noexcept override;

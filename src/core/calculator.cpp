@@ -32,13 +32,9 @@
 #include "token.hpp"
 #include "exceptions.hpp"
 #include "calculator.hpp"
+#include "itstream.hpp"
 
 using namespace std;
-
-
-Calculator::Calculator() {
-    ts = TokenStream();
-}
 
 double Calculator::expression() {
     double lvalue = term();
