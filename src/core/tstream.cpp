@@ -1,6 +1,6 @@
 #include <iostream>
 #include "token.hpp"
-#include "clitstream.hpp"
+#include "tstream.hpp"
 
 using namespace std;
 
@@ -13,20 +13,20 @@ using namespace std;
  * TODO: Add support for more token types and operators as needed.
  * TODO: Split token reading logic from token parsing logic for better separation of concerns.
  */
-Token CLITokenStream::pop() {
+Token TokenStream::pop() {
     if (full) {
         full = false;
         return buffer;
     }
     char sign = 0;
-    cin >> sign;
+    exprStream >> sign;
     switch (sign) {
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9':
         case '.': {
-            cin.putback(sign);
+            exprStream.putback(sign);
             double value;
-            cin >> value; // it will read each digit until it reaches a non-digit character and return whole number
+            exprStream >> value; // it will read each digit until it reaches a non-digit character and return whole number
             return Token(TokenType::NUMBER, value);
         }
         case '+': case '-':
@@ -39,7 +39,7 @@ Token CLITokenStream::pop() {
     }
 }
 
-void CLITokenStream::push(Token token) {
+void TokenStream::push(Token token) {
     if (full) {
         cerr << "TokenStream buffer is full, cannot push token." << endl;
     } else {
@@ -48,14 +48,17 @@ void CLITokenStream::push(Token token) {
     }
 }
 
-Token CLITokenStream::peek() const {
-    if (cin.peek()) {
-        return Token(cin.get());
+Token TokenStream::peek() {
+    if (exprStream.peek()) {
+        return Token(exprStream.get());
     }
     return Token(TokenType::UNKNOWN);
 }
 
-void CLITokenStream::clean() {
+void TokenStream::clear() {
     full = false;
     buffer = Token();
+    exprStream.clear();
+    exprStream.str(""); // Clear the stringstream
+    exprStream.seekg(0); // Reset the stream position to the beginning
 }

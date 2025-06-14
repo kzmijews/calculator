@@ -28,7 +28,6 @@ endif()
 # -- include directories
 include_directories(
   ${CMAKE_SOURCE_DIR}/include/core
-  ${CMAKE_SOURCE_DIR}/include/iface
   ${CMAKE_SOURCE_DIR}/include/cxxopts
 )
 # -- source files
@@ -36,7 +35,6 @@ file(
   GLOB SOURCES
   "src/*.cpp"
   "src/core/*.cpp"
-  "src/iface/*.cpp"
 )
 # -- executable target
 add_executable(calculator ${SOURCES})

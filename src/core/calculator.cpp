@@ -32,7 +32,7 @@
 #include "token.hpp"
 #include "exceptions.hpp"
 #include "calculator.hpp"
-#include "itstream.hpp"
+#include "tstream.hpp"
 
 using namespace std;
 
