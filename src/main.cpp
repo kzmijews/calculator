@@ -65,7 +65,6 @@ int main(int argc, char* argv[]) {
     options.add_options()
         ("h,help", "Show help")
         ("v,version", "Show version")
-        ("q,quit", "Quit the calculator")
         ("i,interactive", "Launch in interactive mode");
     options.add_options("Expression")
         ("e,expression", "Expression to evaluate", cxxopts::value<string>());
@@ -76,10 +75,6 @@ int main(int argc, char* argv[]) {
     }
     if (args.count("version")) {
         cout << "Calculator version: 1.0.0" << endl;
-        return 0;
-    }
-    if (args.count("quit")) {
-        cout << "Exiting calculator." << endl;
         return 0;
     }
     if (args.count("interactive")) {
