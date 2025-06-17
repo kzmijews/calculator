@@ -9,7 +9,7 @@
             "name": "Debug",
             "request": "launch",
             "program": "${workspaceFolder}/build/debug/bin/calculator",
-            "args": [],
+            "args": ["-i"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

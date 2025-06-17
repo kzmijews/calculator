@@ -14,30 +14,26 @@ int interactiveMode() {
     cout << "> ";
     while (true) {
         try {
-            string input;
+            string input = "";
             getline(cin, input);
             calculator << input;
             value = calculator.expression();
             cout << "= " << value << endl;
             cout << "> ";
-        }
-        catch(const EndOfExpression& e) {
+        } catch(const EndOfExpression& e) {
             continue;
-        }
-        catch(const InvalidExpression& e) {
+        } catch(const InvalidExpression& e) {
             cerr << "Invalid expression: " << e.what() << endl;
             calculator.reset();
             continue;
-        }
-        catch(const EndOfExecution& e) {
+        } catch(const EndOfExecution& e) {
             cout << "Exiting calculator." << endl;
             break;
-        }
-        catch(const std::runtime_error& e) {
+        } catch(const runtime_error& e) {
             cerr << "Runtime error: " << e.what() << endl;
             calculator.reset();
             continue;
-        } catch(const std::exception& e) {
+        } catch(const exception& e) {
             cerr << "An error occurred: " << e.what() << endl;
             calculator.reset();
             continue;
@@ -49,16 +45,16 @@ int interactiveMode() {
 int executeMode(string expression) {
     Calculator calculator;
     try {
-        calculator << expression; // Push the expression to the calculator
+        calculator << expression;
         double result = calculator.expression();
-        cout << "Result: " << result << std::endl;
+        cout << "Result: " << result << endl;
     } catch (const InvalidExpression& e) {
-        cerr << "Invalid expression: " << e.what() << std::endl;
+        cerr << "Invalid expression: " << e.what() << endl;
         return 1;
     } catch (const EndOfExecution& e) {
-        cout << "Exiting calculator." << std::endl;
-    } catch (const std::exception& e) {
-        cerr << "An error occurred: " << e.what() << std::endl;
+        cout << "Exiting calculator." << endl;
+    } catch (const exception& e) {
+        cerr << "An error occurred: " << e.what() << endl;
         return 1;
     }
     return 0;
@@ -72,27 +68,27 @@ int main(int argc, char* argv[]) {
         ("q,quit", "Quit the calculator")
         ("i,interactive", "Launch in interactive mode");
     options.add_options("Expression")
-        ("e,expression", "Expression to evaluate", cxxopts::value<std::string>());
+        ("e,expression", "Expression to evaluate", cxxopts::value<string>());
     auto args = options.parse(argc, argv);
     if (args.count("help")) {
-        cout << options.help() << std::endl;
+        cout << options.help() << endl;
         return 0;
     }
     if (args.count("version")) {
-        cout << "Calculator version: 1.0.0" << std::endl;
+        cout << "Calculator version: 1.0.0" << endl;
         return 0;
     }
     if (args.count("quit")) {
-        cout << "Exiting calculator." << std::endl;
+        cout << "Exiting calculator." << endl;
         return 0;
     }
     if (args.count("interactive")) {
-        cout << "Launching calculator in interactive mode." << std::endl;
+        cout << "Launching calculator in interactive mode." << endl;
         return interactiveMode();
     } else if (args.count("expression")) {
-        std::string expression = args["expression"].as<std::string>();
+        string expression = args["expression"].as<string>();
         return executeMode(expression);
     }
-    cout << "No expression provided. Use -h or --help for usage information." << std::endl;
+    cout << "No expression provided. Use -h or --help for usage information." << endl;
     return 1;
 }

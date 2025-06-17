@@ -50,7 +50,7 @@ void TokenStream::push(Token token) {
 
 Token TokenStream::peek() {
     if (exprStream.peek()) {
-        return Token(exprStream.get());
+        return Token(exprStream.peek());
     }
     return Token(TokenType::UNKNOWN);
 }

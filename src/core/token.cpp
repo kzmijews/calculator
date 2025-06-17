@@ -38,7 +38,7 @@ bool Token::isQuit() const {
 }
 
 bool Token::isEnd() const {
-    return type == TokenType::END; 
+    return type == TokenType::END;
 }
 
 TokenType Token::getType() const {

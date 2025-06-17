@@ -37,66 +37,73 @@
 using namespace std;
 
 double Calculator::expression() {
-    double lvalue = term();
-    Token token = ts.pop();
-    TokenType token_kind = token.getType();
-    if (token_kind == TokenType::PLUS) {
-        lvalue += term();
-    } else if (token_kind == TokenType::MINUS) {
-        lvalue -= term();
-    } else {
-        // If the token is not an operator, push it back to the stream
-        // for further processing
-        ts.push(token);
+    double lvalue = term(); // Start with the first term
+    while (true) {
+        Token token = ts.pop();
+        TokenType token_type = token.getType();
+        if (token_type == TokenType::PLUS) {
+            lvalue += term();
+        } else if (token_type == TokenType::MINUS) {
+            lvalue -= term();
+        } else if (token_type == TokenType::END) {
+            // End of expression, return the result
+            break;
+        } else if (token_type == TokenType::UNKNOWN) {
+            // Handle unknown token
+            throw InvalidExpression("Unknown token encountered: '" + to_string(etov(token_type)) + "'");
+        } else {
+            // If the token is not an operator, push it back to the stream
+            // for further processing
+            ts.push(token);
+            break;
+        }
     }
     return lvalue;
 }
 
 double Calculator::term() {
     double lvalue = primary();
-    Token token = ts.pop();
-    TokenType token_kind = token.getType();
-    if (token_kind == TokenType::MULTIPLY) {
-        lvalue *= primary();
-    } else if (token_kind == TokenType::DIVIDE) {
-        double divisor = primary();
-        if (divisor == 0) {
-            throw InvalidExpression("Division by zero is not allowed.");
+    while(true) {
+        Token token = ts.pop();
+        TokenType token_kind = token.getType();
+        if (token_kind == TokenType::MULTIPLY) {
+            lvalue *= primary();
+        } else if (token_kind == TokenType::DIVIDE) {
+            double divisor = primary();
+            if (divisor == 0) {
+                throw InvalidExpression("Division by zero is not allowed.");
+            }
+            lvalue /= divisor;
+        } else {
+            // If the token is not an operator, push it back to the stream
+            // for the further processing
+            ts.push(token);
+            break;
         }
-        lvalue /= divisor;
-    } else {
-        // If the token is not an operator, push it back to the stream
-        // for the further processing
-        ts.push(token);
     }
     return lvalue;
 }
 
 double Calculator::primary() {
     Token token = ts.pop();
-    auto token_value = etov(token.getType());
-    switch (token_value) {
-        // Number
-        case etov(TokenType::NUMBER):
-            return token.getValue();
-        // Left parenthesiss
-        case etov(TokenType::LEFT_PAREN): {
-            double lvalue = expression();
-            // Expecting a right parenthesis
-            token = ts.pop();
-            if (token.getType() != TokenType::RIGHT_PAREN) {
-                throw InvalidExpression("Expected right parenthesis: ')'");
-            }
-            return lvalue;
+    TokenType token_type = token.getType();
+    if (token_type == TokenType::NUMBER) {
+        return token.getValue();
+    } else if (token_type == TokenType::LEFT_PAREN) {
+        double lvalue = expression();
+        // Expecting a right parenthesis
+        token = ts.pop();
+        token_type = token.getType();
+        if (token_type != TokenType::RIGHT_PAREN) {
+            throw InvalidExpression("Expected right parenthesis: ')'");
         }
-        // Unary minus
-        case etov(TokenType::MINUS):
-            return -primary();
-        case etov(TokenType::END):
-            throw EndOfExpression(); // End of expression, no more tokens to process
-        case etov(TokenType::QUIT):
-            throw EndOfExecution(); // Quit command, end the expression processing
-        default:
-            throw  InvalidExpression("Unexpected token: '" + to_string(token_value) + "'");
+        return lvalue;
+    } else if (token_type == TokenType::MINUS) {
+        return -primary();
+    } else if (token_type == TokenType::QUIT) {
+        throw EndOfExecution();
+    } else if (token_type == TokenType::END) {
+        throw EndOfExecution();
     }
+    throw  InvalidExpression("Unexpected token: '" + to_string(etov(token.getType())) + "'");
 }
