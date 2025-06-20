@@ -7,7 +7,6 @@
 
 using namespace std;
 
-
 int interactiveMode() {
     Calculator calculator;
     double value = 0.0;
@@ -61,6 +60,15 @@ int executeMode(string expression) {
     return 0;
 }
 
+int uiMode(int argc, char* argv[]) {
+    QApplication app(argc, argv);
+    Ui::CalculatorUi calculatorUi;
+    calculatorUi.setup();
+    calculatorUi.createItems();
+    calculatorUi.getMainWindow()->show();
+    return app.exec();
+}
+
 int main(int argc, char* argv[]) {
     cxxopts::Options options("Calculator", "A simple calculator application");
     options.add_options()
@@ -87,12 +95,7 @@ int main(int argc, char* argv[]) {
         return executeMode(expression);
     } else if (args.count("user-interface")) {
         cout << "Launching calculator with user interface (GUI)." << endl;
-        QApplication app(argc, argv);
-        QMainWindow mainWindow;
-        Ui::CalculatorMainWindow ui;
-        ui.setupUi(&mainWindow);
-        mainWindow.show();
-        return app.exec();
+        return uiMode(argc, argv);
     }
     cout << "No expression provided. Use -h or --help for usage information." << endl;
     return 1;

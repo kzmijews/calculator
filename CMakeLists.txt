@@ -36,6 +36,7 @@ file(
   GLOB SOURCES
   "src/*.cpp"
   "src/core/*.cpp"
+  "src/ui/*.cpp"
 )
 # -- UI files
 set(
