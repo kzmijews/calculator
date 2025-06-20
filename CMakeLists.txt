@@ -29,12 +29,18 @@ endif()
 include_directories(
   ${CMAKE_SOURCE_DIR}/include/core
   ${CMAKE_SOURCE_DIR}/include/cxxopts
+  ${CMAKE_SOURCE_DIR}/include/ui
 )
 # -- source files
 file(
   GLOB SOURCES
   "src/*.cpp"
   "src/core/*.cpp"
+)
+# -- UI files
+set(
+  UIS
+  "src/ui/calculator.ui"
 )
 # -- executable target
 add_executable(calculator ${SOURCES})
@@ -44,6 +50,20 @@ if(MSVC)
 else()
   target_link_libraries(calculator PRIVATE m)
 endif()
+# -- Qt6 settings
+if(NOT DEFINED CMAKE_PREFIX_PATH AND DEFINED ENV{Qt6_DIR})
+  set(CMAKE_PREFIX_PATH "$ENV{Qt6_DIR}")
+elseif(NOT DEFINED CMAKE_PREFIX_PATH)
+  message(FATAL_ERROR "Qt6_DIR environment variable is not set. Please set it to the Qt6 installation directory.")
+else()
+  message(STATUS "Using Qt6_DIR from CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+endif()
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
+target_link_libraries(
+  calculator PRIVATE
+  Qt6::Widgets
+)
+qt_wrap_ui(UI_HEADERS ${UIS})
 # -- install rules
 install(
   TARGETS calculator

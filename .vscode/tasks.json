@@ -10,7 +10,8 @@
                 "${workspaceFolder}",
                 "-B",
                 "${workspaceFolder}/build/debug",
-                "-DCMAKE_BUILD_TYPE=Debug"
+                "-DCMAKE_BUILD_TYPE=Debug",
+                "-DCMAKE_PREFIX_PATH=/opt/Qt/6.9.1/gcc_64/lib/cmake"
             ],
             "options": {
                 "cwd": "${fileDirname}"
@@ -27,9 +28,7 @@
             "command": "cmake",
             "args": [
                 "--build",
-                "${workspaceFolder}/build/debug",
-                "--config",
-                "Debug"
+                "${workspaceFolder}/build/debug"
             ],
             "options": {
                 "cwd": "${fileDirname}"
@@ -49,7 +48,8 @@
                 "${workspaceFolder}",
                 "-B",
                 "${workspaceFolder}/build/release",
-                "-DCMAKE_BUILD_TYPE=Release"
+                "-DCMAKE_BUILD_TYPE=Release",
+                "-DCMAKE_PREFIX_PATH=/opt/Qt/6.9.1/gcc_64/lib/cmake"
             ],
             "options": {
                 "cwd": "${fileDirname}"

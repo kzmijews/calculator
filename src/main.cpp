@@ -2,6 +2,7 @@
 #include "cxxopts.hpp"
 #include "token.hpp"
 #include "calculator.hpp"
+#include "calculator_ui.hpp"
 #include "exceptions.hpp"
 
 using namespace std;
@@ -65,7 +66,8 @@ int main(int argc, char* argv[]) {
     options.add_options()
         ("h,help", "Show help")
         ("v,version", "Show version")
-        ("i,interactive", "Launch in interactive mode");
+        ("u,user-interface", "Launch the calculator with a user interface (GUI)")
+        ("i,interactive", "Launch in interactive (console) mode");
     options.add_options("Expression")
         ("e,expression", "Expression to evaluate", cxxopts::value<string>());
     auto args = options.parse(argc, argv);
@@ -83,6 +85,14 @@ int main(int argc, char* argv[]) {
     } else if (args.count("expression")) {
         string expression = args["expression"].as<string>();
         return executeMode(expression);
+    } else if (args.count("user-interface")) {
+        cout << "Launching calculator with user interface (GUI)." << endl;
+        QApplication app(argc, argv);
+        QMainWindow mainWindow;
+        Ui::CalculatorMainWindow ui;
+        ui.setupUi(&mainWindow);
+        mainWindow.show();
+        return app.exec();
     }
     cout << "No expression provided. Use -h or --help for usage information." << endl;
     return 1;
