@@ -64,7 +64,6 @@ int uiMode(int argc, char* argv[]) {
     QApplication app(argc, argv);
     Ui::CalculatorUi calculatorUi;
     calculatorUi.setup();
-    calculatorUi.createItems();
     calculatorUi.getMainWindow()->show();
     return app.exec();
 }

@@ -1,13 +1,5 @@
 #include "calculator_ui.hpp"
 
-Ui::CalculatorUi::CalculatorUi() {
-    mainWindow = std::make_unique<QMainWindow>();
-}
-
-QMainWindow* Ui::CalculatorUi::getMainWindow() const {
-    return mainWindow.get();
-}
-
 void Ui::CalculatorUi::keyboardButtonClicked(QTextBrowser* resultBrowser, const QString& text) {
     if (text == "AC") {
         resultBrowser->setText("");
@@ -20,11 +12,7 @@ void Ui::CalculatorUi::keyboardButtonClicked(QTextBrowser* resultBrowser, const 
     }
 }
 
-void Ui::CalculatorUi::setup() {
-    setupUi(mainWindow.get());
-}
-
-void Ui::CalculatorUi::createItems() {
+void Ui::CalculatorUi::connectButtons() {
     //auto buttonAction = [&](const QString& buttonText) { keyboardButtonClicked(ui.resultBrowser, buttonText); };
     QObject::connect(zeroButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, zeroButton->text()); });
     QObject::connect(oneButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, oneButton->text()); });
@@ -50,4 +38,17 @@ void Ui::CalculatorUi::createItems() {
     QObject::connect(piButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, piButton->text()); });
     QObject::connect(factorialButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, factorialButton->text()); });
     QObject::connect(sqrtButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, sqrtButton->text()); });
+}
+
+Ui::CalculatorUi::CalculatorUi() {
+    mainWindow = std::make_unique<QMainWindow>();
+}
+
+QMainWindow* Ui::CalculatorUi::getMainWindow() const {
+    return mainWindow.get();
+}
+
+void Ui::CalculatorUi::setup() {
+    setupUi(mainWindow.get());
+    connectButtons();
 }

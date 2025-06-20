@@ -8,12 +8,12 @@ namespace Ui {
     class CalculatorUi: protected CalculatorMainWindow {
     private:
         std::unique_ptr<QMainWindow> mainWindow;
+        void connectButtons();
         void keyboardButtonClicked(QTextBrowser* resultBrowser, const QString& text);
     public:
         CalculatorUi();
         ~CalculatorUi() = default;
         void setup();
-        void createItems();
         QMainWindow* getMainWindow() const;
     };
 } // namespace Ui
