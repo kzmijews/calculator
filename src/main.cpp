@@ -62,7 +62,8 @@ int executeMode(string expression) {
 
 int uiMode(int argc, char* argv[]) {
     QApplication app(argc, argv);
-    Ui::CalculatorUi calculatorUi;
+    Calculator calculator;
+    Ui::CalculatorUi calculatorUi(calculator);
     calculatorUi.setup();
     calculatorUi.getMainWindow()->show();
     return app.exec();

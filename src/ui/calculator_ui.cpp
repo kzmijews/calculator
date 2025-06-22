@@ -1,19 +1,40 @@
+#include "calculator.hpp"
 #include "calculator_ui.hpp"
+#include <iostream>
 
 void Ui::CalculatorUi::keyboardButtonClicked(QTextBrowser* resultBrowser, const QString& text) {
     if (text == "AC") {
         resultBrowser->setText("");
+        calculator.reset();
     } else if (text == "=") {
-        // Evaluate the expression in the resultBrowser
-        // This is a placeholder for actual evaluation logic
-        resultBrowser->append("Evaluated expression");
+        calculator << resultBrowser->toPlainText().toStdString() << ";";
+        double result = calculator.expression();
+        resultBrowser->setText(QString::number(result));
+    } else if (text == "x") {
+        resultBrowser->insertPlainText("*");
+    } else if (text == "pi") {
+        resultBrowser->insertPlainText(QString::number(M_PI));
+    } else if (text == "sqrt") {
+        resultBrowser->insertPlainText("sqrt(");
+    } else if (text == "rm") {
+        QString currentText = resultBrowser->toPlainText();
+        if (!currentText.isEmpty()) {
+            // Remove the last character
+            currentText.chop(1);
+            resultBrowser->setText(currentText);
+        }
+    } else if (text == "sep") {
+        resultBrowser->insertPlainText(".");
     } else {
-        resultBrowser->append(text);
+        // Prevent starting with an operator
+        if (resultBrowser->toPlainText().isEmpty() && (text == "+" || text == "x" || text == "/" || text == "^")) {
+            return;
+        }
+        resultBrowser->insertPlainText(text);
     }
 }
 
 void Ui::CalculatorUi::connectButtons() {
-    //auto buttonAction = [&](const QString& buttonText) { keyboardButtonClicked(ui.resultBrowser, buttonText); };
     QObject::connect(zeroButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, zeroButton->text()); });
     QObject::connect(oneButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, oneButton->text()); });
     QObject::connect(twoButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, twoButton->text()); });
@@ -40,7 +61,7 @@ void Ui::CalculatorUi::connectButtons() {
     QObject::connect(sqrtButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, sqrtButton->text()); });
 }
 
-Ui::CalculatorUi::CalculatorUi() {
+Ui::CalculatorUi::CalculatorUi(Calculator& calculator) : calculator(calculator) {
     mainWindow = std::make_unique<QMainWindow>();
 }
 
