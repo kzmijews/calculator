@@ -57,3 +57,16 @@ Enter expression (or q to quit):
 > q
 Exiting calculator.
 ```
+
+## GUI mode
+To run:
+```bash
+./calculator -u
+```
+This will display GUI:
+
+<div>
+    <p align="center" width="100%">
+        <img src="./imgs/calculator_gui.png" width="60%" height="60%"/>
+    </p>
+</div>
