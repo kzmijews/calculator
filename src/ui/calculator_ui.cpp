@@ -1,3 +1,4 @@
+#include "exceptions.hpp"
 #include "calculator.hpp"
 #include "calculator_ui.hpp"
 #include <iostream>
@@ -8,9 +9,19 @@ void Ui::CalculatorUi::keyboardButtonClicked(QTextBrowser* resultBrowser, const 
         calculator.reset();
     } else if (text == "=") {
         calculator << resultBrowser->toPlainText().toStdString() << ";";
-        double result = calculator.expression();
-        resultBrowser->setText("");
-        resultBrowser->insertPlainText(QString::number(result));
+        try {
+            double result = calculator.expression();
+            resultBrowser->setText("");
+            resultBrowser->insertPlainText(QString::number(result));
+        } catch (const InvalidExpression& e) {
+            resultBrowser->setText("ERR: invalid/unsupported");
+            cout << "Error: " << e.what() << endl;
+            calculator.reset();
+        } catch (const std::runtime_error& e) {
+            resultBrowser->setText("ERR: unexpected error");
+            cout << "Error: " << e.what() << endl;
+            calculator.reset();
+        }
     } else if (text == "x") {
         resultBrowser->insertPlainText("*");
     } else if (text == "pi") {
