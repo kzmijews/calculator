@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>800</height>
+    <width>480</width>
+    <height>640</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -75,7 +75,7 @@
       </property>
       <property name="font">
        <font>
-        <pointsize>24</pointsize>
+        <pointsize>32</pointsize>
         <stylestrategy>PreferAntialias</stylestrategy>
        </font>
       </property>
@@ -619,7 +619,7 @@ color: rgb(29, 255, 0);</string>
          <string>.</string>
         </property>
         <property name="shortcut">
-         <string>,</string>
+         <string>.</string>
         </property>
        </widget>
       </item>

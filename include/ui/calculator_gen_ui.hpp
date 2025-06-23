@@ -1,13 +1,13 @@
 /********************************************************************************
-** Form generated from reading UI file 'calculatorRzdWrl.ui'
+** Form generated from reading UI file 'calculatorjgayya.ui'
 **
 ** Created by: Qt User Interface Compiler version 6.9.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
-#ifndef CALCULATORRZDWRL_H
-#define CALCULATORRZDWRL_H
+#ifndef CALCULATORJGAYYA_H
+#define CALCULATORJGAYYA_H
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
@@ -56,7 +56,7 @@ public:
     {
         if (CalculatorMainWindow->objectName().isEmpty())
             CalculatorMainWindow->setObjectName("CalculatorMainWindow");
-        CalculatorMainWindow->resize(600, 800);
+        CalculatorMainWindow->resize(480, 640);
         QSizePolicy sizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -84,7 +84,7 @@ public:
         resultBrowser->setMinimumSize(QSize(120, 30));
         resultBrowser->setBaseSize(QSize(0, 0));
         QFont font1;
-        font1.setPointSize(24);
+        font1.setPointSize(32);
         font1.setStyleStrategy(QFont::PreferAntialias);
         resultBrowser->setFont(font1);
         resultBrowser->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 0, 0);\n"
@@ -422,7 +422,7 @@ public:
 #endif // QT_CONFIG(shortcut)
         sepButton->setText(QCoreApplication::translate("CalculatorMainWindow", ".", nullptr));
 #if QT_CONFIG(shortcut)
-        sepButton->setShortcut(QCoreApplication::translate("CalculatorMainWindow", ",", nullptr));
+        sepButton->setShortcut(QCoreApplication::translate("CalculatorMainWindow", ".", nullptr));
 #endif // QT_CONFIG(shortcut)
         fiveButton->setText(QCoreApplication::translate("CalculatorMainWindow", "5", nullptr));
 #if QT_CONFIG(shortcut)
@@ -462,4 +462,4 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#endif // CALCULATORRZDWRL_H
+#endif // CALCULATORJGAYYA_H

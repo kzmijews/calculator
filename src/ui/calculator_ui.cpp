@@ -9,19 +9,21 @@ void Ui::CalculatorUi::keyboardButtonClicked(QTextBrowser* resultBrowser, const 
     } else if (text == "=") {
         calculator << resultBrowser->toPlainText().toStdString() << ";";
         double result = calculator.expression();
-        resultBrowser->setText(QString::number(result));
+        resultBrowser->setText("");
+        resultBrowser->insertPlainText(QString::number(result));
     } else if (text == "x") {
         resultBrowser->insertPlainText("*");
     } else if (text == "pi") {
         resultBrowser->insertPlainText(QString::number(M_PI));
     } else if (text == "sqrt") {
         resultBrowser->insertPlainText("sqrt(");
-    } else if (text == "rm") {
+    } else if (text == "<<") {
         QString currentText = resultBrowser->toPlainText();
         if (!currentText.isEmpty()) {
             // Remove the last character
             currentText.chop(1);
-            resultBrowser->setText(currentText);
+            resultBrowser->setText("");
+            resultBrowser->insertPlainText(currentText);
         }
     } else if (text == "sep") {
         resultBrowser->insertPlainText(".");
