@@ -25,15 +25,16 @@ cmake -S . -B ./build/debug -DCMAKE_BUILD_TYPE=Debug"
 cmake --build ./build/debug" --config "Debug"
 ```
 
-## Ubunt: Docker
+## Ubunt OS: Docker
 For ubuntu on x64 arch, isolated environment for builds were
 added. First install docker regarding to the official instruction,
 for instance: see [Ubuntu instraction](https://docs.docker.com/engine/install/ubuntu/), then execute following command:
 ```bash
 sudo docker build \
+    -f Dockerfile.build \
     --build-arg QT_USERNAME=<email-used-for-qt-registration> \
     --build-arg QT_PASSWORD=<password-used-for-qt-registration> \
-    -f Dockerfile.build --output type=local,dest=./ .
+    --output type=local,dest=./ .
 ```
 built binaries will be available in `artifacts` directory.
 
