@@ -43,6 +43,10 @@ Build artifacts are available in following directory:
 ```bash
 ./build/<build_type>/bin/
 ```
+or (if you are using [Dockerfile.build](./Dockerfile.build)):
+```bash
+./artifacts
+```
 where `<build_type>` could be `debug` or `release`.
 All information needed to properly execute calculator app can be displayed on `--help` / `-h` command
 
