@@ -1,0 +1,58 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect x="0" y="0" width="512" height="512" rx="96" fill="#1E1E1E"/>
+
+  <!-- Display Screen -->
+  <rect x="64" y="64" width="384" height="80" rx="12" fill="#333"/>
+  <text x="256" y="120" font-family="monospace" font-size="48" fill="#1ABC9C" text-anchor="middle">1234</text>
+
+  <!-- Buttons Grid -->
+  <!-- Row 1 -->
+  <circle cx="112" cy="192" r="36" fill="#444"/>
+  <circle cx="208" cy="192" r="36" fill="#444"/>
+  <circle cx="304" cy="192" r="36" fill="#444"/>
+  <circle cx="400" cy="192" r="36" fill="#1ABC9C"/>
+  <text x="400" y="200" font-family="Arial" font-size="36" fill="#FFF" text-anchor="middle">÷</text>
+
+  <!-- Row 2 -->
+  <circle cx="112" cy="272" r="36" fill="#444"/>
+  <circle cx="208" cy="272" r="36" fill="#444"/>
+  <circle cx="304" cy="272" r="36" fill="#444"/>
+  <circle cx="400" cy="272" r="36" fill="#1ABC9C"/>
+  <text x="400" y="280" font-family="Arial" font-size="36" fill="#FFF" text-anchor="middle">×</text>
+
+  <!-- Row 3 -->
+  <circle cx="112" cy="352" r="36" fill="#444"/>
+  <circle cx="208" cy="352" r="36" fill="#444"/>
+  <circle cx="304" cy="352" r="36" fill="#444"/>
+  <circle cx="400" cy="352" r="36" fill="#1ABC9C"/>
+  <text x="400" y="360" font-family="Arial" font-size="36" fill="#FFF" text-anchor="middle">−</text>
+
+  <!-- Row 4 -->
+  <circle cx="112" cy="432" r="36" fill="#444"/>
+  <circle cx="208" cy="432" r="36" fill="#444"/>
+  <circle cx="304" cy="432" r="36" fill="#444"/>
+  <circle cx="400" cy="432" r="36" fill="#1ABC9C"/>
+  <text x="400" y="440" font-family="Arial" font-size="36" fill="#FFF" text-anchor="middle">+</text>
+
+  <!-- Button Labels -->
+  <!-- Row 1 Numbers -->
+  <text x="112" y="200" font-family="Arial" font-size="28" fill="#FFF" text-anchor="middle">7</text>
+  <text x="208" y="200" font-family="Arial" font-size="28" fill="#FFF" text-anchor="middle">8</text>
+  <text x="304" y="200" font-family="Arial" font-size="28" fill="#FFF" text-anchor="middle">9</text>
+
+  <!-- Row 2 Numbers -->
+  <text x="112" y="280" font-family="Arial" font-size="28" fill="#FFF" text-anchor="middle">4</text>
+  <text x="208" y="280" font-family="Arial" font-size="28" fill="#FFF" text-anchor="middle">5</text>
+  <text x="304" y="280" font-family="Arial" font-size="28" fill="#FFF" text-anchor="middle">6</text>
+
+  <!-- Row 3 Numbers -->
+  <text x="112" y="360" font-family="Arial" font-size="28" fill="#FFF" text-anchor="middle">1</text>
+  <text x="208" y="360" font-family="Arial" font-size="28" fill="#FFF" text-anchor="middle">2</text>
+  <text x="304" y="360" font-family="Arial" font-size="28" fill="#FFF" text-anchor="middle">3</text>
+
+  <!-- Row 4 Keys -->
+  <text x="112" y="440" font-family="Arial" font-size="28" fill="#FFF" text-anchor="middle">0</text>
+  <text x="208" y="440" font-family="Arial" font-size="28" fill="#FFF" text-anchor="middle">.</text>
+  <text x="304" y="440" font-family="Arial" font-size="28" fill="#FFF" text-anchor="middle">=</text>
+</svg>

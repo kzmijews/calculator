@@ -1,4 +1,4 @@
-ARG BASE_IMAGE_VER="24.04"
+ARG BASE_IMAGE_VER="22.04"
 ARG CMAKE_VERSION="3.31.6"
 ARG QT_VERSION="6.9.1"
 ARG QT_INSTALLER_VERSION="4.9"
@@ -6,8 +6,6 @@ ARG PROJECT_BUILD_TYPE="Debug"
 
 # Set base container image
 FROM ubuntu:${BASE_IMAGE_VER} AS prepare-os-stage
-# Redefined build args to make them visible at this stage
-ARG CMAKE_VERSION
 # Step 1: set working directory
 WORKDIR /opt/calculator
 # Step 2: install dependencies
@@ -38,6 +36,13 @@ RUN apt-get update && \
     libglib2.0-0 \
     libglib2.0-dev \
     wget
+
+FROM prepare-os-stage AS install-cmake-stage
+# Redefined build args to make them visible at this stage
+ARG CMAKE_VERSION
+# Step 1: set working directory
+WORKDIR /opt/calculator
+# Step 2: install CMake
 # Run it in separate layer to avoid rebuild of entire layer just because of cmake
 RUN echo "Step 2: Download and install CMake ${CMAKE_VERSION}"
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh -O cmake-linux.sh && \
@@ -45,7 +50,15 @@ RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cm
     mkdir -p ./cmake_install && \
     ./cmake-linux.sh --skip-license --prefix=./cmake_install/
 
-FROM prepare-os-stage AS install-qt-stage
+FROM install-cmake-stage AS install-linuxdeploy-stage
+# Step 1: set working directory
+WORKDIR /opt/calculator
+# Step 2: install Linuxdeploy
+RUN echo "Step 3: Download linuxdeploy"
+RUN wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage -O linuxdeployqt.AppImage && \
+    chmod +x linuxdeployqt.AppImage
+
+FROM install-linuxdeploy-stage AS install-qt-stage
 # Redefined build args to make them visible at this stage
 ARG QT_VERSION
 ARG QT_USERNAME
@@ -54,7 +67,7 @@ ARG QT_INSTALLER_VERSION
 # Step 1: set working directory
 WORKDIR /opt/calculator
 # Step 2: download and install Qt
-RUN echo "Step 3: Download and install Qt ${QT_VERSION}"
+RUN echo "Step 4: Download and install Qt ${QT_VERSION}"
 RUN wget https://www.nic.funet.fi/pub/mirrors/download.qt-project.org/archive/online_installers/${QT_INSTALLER_VERSION}/qt-online-installer-linux-x64-${QT_INSTALLER_VERSION}.0.run -O qt-linux.run && \
     chmod +x qt-linux.run && \
     ./qt-linux.run \
@@ -77,14 +90,31 @@ COPY . /opt/calculator
 ENV PATH="/opt/calculator/cmake_install/bin:${PATH}"
 ENV Qt6_DIR="/opt/Qt/${QT_VERSION}/gcc_64/lib/cmake/Qt6"
 # Step 3: generate Makefiles
-RUN echo "Step 4: CMake configure" && \
+RUN echo "Step 5: CMake configure" && \
     cmake -S . -B ./build/${PROJECT_BUILD_TYPE} -DCMAKE_BUILD_TYPE="${PROJECT_BUILD_TYPE}"
 # Step 4: build the project
-RUN echo "Step 5: CMake build" && \
+RUN echo "Step 6: CMake build" && \
     cmake --build ./build/${PROJECT_BUILD_TYPE} --config "${PROJECT_BUILD_TYPE}"
 
-FROM scratch AS build-app-output-stage
+FROM build-calculator-stage AS prepare-artifacts-stage
 ARG PROJECT_BUILD_TYPE
-COPY --from=build-calculator-stage /opt/calculator/build/${PROJECT_BUILD_TYPE}/bin/ /artifacts/
+ARG QT_VERSION
+ENV PATH="/opt/Qt/${QT_VERSION}/gcc_64/bin:${PATH}"
+# Step 1: set working directory
+WORKDIR /opt/calculator
+# Step 2: make linuxdeploy executable and prepare artifacts directory
+RUN echo "Step 7: Prepare artifacts directory" && \
+    mkdir -p calculator/usr/bin/ && \
+    cp ./build/${PROJECT_BUILD_TYPE}/bin/calculator calculator/usr/bin/ && \
+    cp ./calculator.desktop calculator/ && \
+    cp ./imgs/icon.svg calculator/calculator.svg
+RUN echo "Step 8: Prepare linuxdeploy" && \
+    ./linuxdeployqt.AppImage --appimage-extract
+RUN echo "Step 8: Create deployment" && \
+    ./squashfs-root/AppRun calculator/calculator.desktop \
+        -bundle-non-qt-libs
+
+FROM scratch AS build-app-output-stage
+COPY --from=prepare-artifacts-stage /opt/calculator/calculator/ /artifacts/
 # Add fake entrypoint to satisfy docker compose, it's a common practice
-ENTRYPOINT ["./artifacts/calculator"]
+ENTRYPOINT ["./artifacts/AppRun"]
