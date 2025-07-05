@@ -13,6 +13,7 @@ faster — as long as there are no changes to the build environment.
 > to registered Qt users.
 
 To obtain access, please create a free Qt account at:
+
 👉 https://login.qt.io/register
 
 You will need to provide your Qt credentials as build arguments.
@@ -29,7 +30,7 @@ sudo docker build \
     --output type=local,dest=./ .
 ```
 
-BThe build output will be available in the `./artifacts` directory.
+The build output will be available in the `./artifacts` directory.
 
 # Run
 The application can be run in multiple modes, as described in the sections below.
