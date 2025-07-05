@@ -10,7 +10,8 @@ FROM ubuntu:${BASE_IMAGE_VER} AS prepare-os-stage
 WORKDIR /opt/calculator
 # Step 2: install dependencies
 RUN echo "Step 1: Install dependencies"
-RUN apt-get update && \
+RUN echo 'Acquire::ForceIPv4 "true";' > /etc/apt/apt.conf.d/99force-ipv4 && \
+    apt-get update && \
     apt-get install -y \
     build-essential \
     mesa-common-dev \
@@ -110,7 +111,7 @@ RUN echo "Step 7: Prepare artifacts directory" && \
     cp ./imgs/icon.svg calculator/calculator.svg
 RUN echo "Step 8: Prepare linuxdeploy" && \
     ./linuxdeployqt.AppImage --appimage-extract
-RUN echo "Step 8: Create deployment" && \
+RUN echo "Step 9: Create deployment" && \
     ./squashfs-root/AppRun calculator/calculator.desktop \
         -bundle-non-qt-libs
 

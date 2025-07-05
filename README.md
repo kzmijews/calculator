@@ -1,34 +1,26 @@
 # Build
-First you have to install CMake and Qt libraries required by GUI mode.
-If you want to isolate building environment from your host OS, then
-you can use docker for that process.
+To build this project, a few prerequisites are required:
+- Qt 6.9.1 (used for the GUI)
+- g++ compiler
+- CMake build tools
 
-## Host OS: Visual Studio Code
-- Configure (will generate proper Makefile):
-```bash
-Ctrl + Shift + P
-> Type: "Run Task"
-> Select: "CMake Configure [<Type of build>]
-```
-- Build (will create execution binary):
-```bash
-Ctrl + Shift + P
-> Type: "Run Task"
-> Select: "CMake Build [<Type of build>]
-```
-By default "Debug" type of build is set, key sequence: `Ctrl + Shift + B` will rebuild "Debug" version.
+To simplify the build process and ensure consistency, the entire build environment is isolated
+within a Docker container. The Dockerfile is structured into multiple stages to enable layer
+caching. This means that only the first build may take a while; subsequent builds will be much
+faster — as long as there are no changes to the build environment.
 
-## Host OS: CMake
-To configure and build try following commands:
-```bash
-cmake -S . -B ./build/debug -DCMAKE_BUILD_TYPE=Debug"
-cmake --build ./build/debug" --config "Debug"
-```
+> **Note:** Building the project requires access to the Qt Essentials libraries, which are available
+> to registered Qt users.
 
-## Ubunt OS: Docker
-For ubuntu on x64 arch, isolated environment for builds were
-added. First install docker regarding to the official instruction,
-for instance: see [Ubuntu instraction](https://docs.docker.com/engine/install/ubuntu/), then execute following command:
+To obtain access, please create a free Qt account at:
+👉 https://login.qt.io/register
+
+You will need to provide your Qt credentials as build arguments.
+
+## Steps to Build
+1. Install Docker following the official instructions.
+Example for Ubuntu: [Docker Installation Guide for Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
+2. Run the following command, replacing the placeholder values with your Qt account credentials:
 ```bash
 sudo docker build \
     -f Dockerfile.build \
@@ -36,26 +28,22 @@ sudo docker build \
     --build-arg QT_PASSWORD=<password-used-for-qt-registration> \
     --output type=local,dest=./ .
 ```
-built binaries will be available in `artifacts` directory.
+
+BThe build output will be available in the `./artifacts` directory.
 
 # Run
-Build artifacts are available in following directory:
+The application can be run in multiple modes, as described in the sections below.
+For additional options and usage details, run the executable with the `--help` flag:
 ```bash
-./build/<build_type>/bin/
+./calculator --help
 ```
-or (if you are using [Dockerfile.build](./Dockerfile.build)):
-```bash
-./artifacts
-```
-where `<build_type>` could be `debug` or `release`.
-All information needed to properly execute calculator app can be displayed on `--help` / `-h` command
 
 ## GUI mode
-To run:
+To launch the graphical user interface, run:
 ```bash
 ./calculator -u
 ```
-This will display GUI:
+This will display the GUI:
 
 <div>
     <p align="center" width="100%">
@@ -64,24 +52,25 @@ This will display GUI:
 </div>
 
 ## execution mode
-To run and execute expression type:
+To directly evaluate an expression, use the `-e` flag:
 ```bash
 ./calculator -e <expression>;
 ```
-for example:
+Example:
 ```bash
 ./calculator -e "(1+2)*3;"
 ```
-Don't forget about the last sign `;`, it's needed to mark the end of expression, if the sign won't be provided
-calcualtor will still wait for more tokens to process as a part of provided expression.
+> **Note:** Don’t forget the semicolon (;) at the end of the expression.
+> It is required to signal the end of the input. If omitted, the calculator will
+> continue to wait for additional tokens.
 
 ## interactive mode
-To run:
+To enter interactive mode, run:
 ```bash
 ./calculator -i
 ```
-This will display the prompt and wait until user provide expression to evaluate, and confirm it with
-<ENTER> key, for instance:
+This mode displays a prompt and allows you to enter expressions one at a time,
+confirming each with the `<ENTER>` key:
 ```bash
 Launching calculator in interactive mode.
 Enter expression (or q to quit):
@@ -89,4 +78,32 @@ Enter expression (or q to quit):
 = 9
 > q
 Exiting calculator.
+```
+
+# Development
+f you prefer to set up the development environment directly on your host machine for greater control during
+development, follow the tips below.
+
+## Visual Studio Code
+Recommended configuration files are provided in the `./.vscode` directory. These allow you to:
+- Configure the project (this generates the appropriate Makefile):
+```bash
+Ctrl + Shift + P
+> Type: "Run Task"
+> Select: "CMake Configure [<Type of build>]
+```
+- Build the project (this compiles the executable binary):
+```bash
+Ctrl + Shift + P
+> Type: "Run Task"
+> Select: "CMake Build [<Type of build>]
+```
+By default, the build type is set to Debug, so pressing `Ctrl + Shift + B` will rebuild the project
+in Debug mode.
+
+## CMake
+Alternatively, you can configure and build the project directly using the CMake command-line tools:
+```bash
+cmake -S . -B ./build/debug -DCMAKE_BUILD_TYPE=Debug"
+cmake --build ./build/debug" --config "Debug"
 ```
