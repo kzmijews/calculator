@@ -33,10 +33,36 @@ sudo docker build \
 The build output will be available in the `./artifacts` directory.
 
 # Run
-The application can be run in multiple modes, as described in the sections below.
-For additional options and usage details, run the executable with the `--help` flag:
+To run the application, essential OpenGL-related libraries are required. You can install
+them using the following command:
+```bash
+sudo apt update && apt install -y \
+    libgl1 \
+    libegl1 \
+    libfontconfig1
+```
+Alternatively, the application can be containerized with Docker:
+```bash
+docker build -t calculator .
+```
+And run from within the container:
+```bash
+xhost +local:docker
+docker run \
+    --rm -it \
+    -e DISPLAY=$DISPLAY \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    calculator
+```
+The application supports multiple run modes, as described in the sections below.
+For usage details and available options, execute the binary with the `--help` flag:
 ```bash
 ./calculator --help
+```
+To pass arguments to the application when running in Docker, use the `APP_ARGS`
+environment variable:
+```bash
+-e APP_ARGS="--help"
 ```
 
 ## GUI mode
@@ -82,8 +108,8 @@ Exiting calculator.
 ```
 
 # Development
-f you prefer to set up the development environment directly on your host machine for greater control during
-development, follow the tips below.
+If you prefer to set up the development environment directly on your host machine for greater
+control during development, follow the tips below.
 
 ## Visual Studio Code
 Recommended configuration files are provided in the `./.vscode` directory. These allow you to:
