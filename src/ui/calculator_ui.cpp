@@ -1,7 +1,9 @@
+// standard library headers
+#include <iostream>
+// app headers
 #include "exceptions.hpp"
 #include "calculator.hpp"
 #include "calculator_ui.hpp"
-#include <iostream>
 
 void Ui::CalculatorUi::keyboardButtonClicked(QTextBrowser* resultBrowser, const QString& text) {
     if (text == "AC") {

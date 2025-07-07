@@ -1,12 +1,23 @@
+// standard library headers
 #include <iostream>
-#include "cxxopts.hpp"
-#include "token.hpp"
+// app headers
 #include "calculator.hpp"
 #include "calculator_ui.hpp"
 #include "exceptions.hpp"
+#include "token.hpp"
+// generated headers by CMake
+#include "version.hpp"
+// external library headers
+#include "cxxopts.hpp"
 
 using namespace std;
 
+/**
+ * Interactive mode for the calculator.
+ * This function allows users to enter expressions and get results in a console.
+ * It handles various exceptions and provides feedback on errors.
+ * @return 0 on success, non-zero on error.
+ */
 int interactiveMode() {
     Calculator calculator;
     double value = 0.0;
@@ -42,6 +53,13 @@ int interactiveMode() {
     return 0;
 }
 
+/**
+ * Executes a single expression in the calculator.
+ * This function evaluates the provided expression and prints the result.
+ * It handles exceptions related to invalid expressions and end of execution.
+ * @param expression The expression to evaluate.
+ * @return 0 on success, non-zero on error.
+ */
 int executeMode(string expression) {
     Calculator calculator;
     try {
@@ -60,6 +78,15 @@ int executeMode(string expression) {
     return 0;
 }
 
+/**
+ * Launches the calculator with a user interface (GUI).
+ * This function initializes the Qt application and sets up the main window for the calculator.
+ * It uses the CalculatorUi class to manage the user interface.
+ * @param argc The number of command line arguments.
+ * @param argv The command line arguments.
+ * @return The exit code of the application.
+ *         Returns 0 on successful execution, or a non-zero value on error.
+ */
 int uiMode(int argc, char* argv[]) {
     QApplication app(argc, argv);
     Calculator calculator;
@@ -84,7 +111,7 @@ int main(int argc, char* argv[]) {
         return 0;
     }
     if (args.count("version")) {
-        cout << "Calculator version: 1.0.0" << endl;
+        cout << "Calculator version: " << APP_VERSION_STRING << endl;
         return 0;
     }
     if (args.count("interactive")) {

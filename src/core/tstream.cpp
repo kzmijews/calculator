@@ -1,18 +1,11 @@
+// standard library headers
 #include <iostream>
+// app headers
 #include "token.hpp"
 #include "tstream.hpp"
 
 using namespace std;
 
-/**
- * TokenStream class implementation.
- * This class is responsible for reading tokens from the input stream and managing a buffer for tokens.
- * It can pop a token from the input or push a token back into the buffer.
- * TODO: Handle errors and unexpected input more gracefully.
- * TODO: Consider using a more robust input method for token parsing, such as regex or a lexer.
- * TODO: Add support for more token types and operators as needed.
- * TODO: Split token reading logic from token parsing logic for better separation of concerns.
- */
 Token TokenStream::pop() {
     if (full) {
         full = false;
@@ -26,7 +19,8 @@ Token TokenStream::pop() {
         case '.': {
             exprStream.putback(sign);
             double value;
-            exprStream >> value; // it will read each digit until it reaches a non-digit character and return whole number
+            // it will read each digit until it reaches a non-digit character and return whole number
+            exprStream >> value;
             return Token(TokenType::NUMBER, value);
         }
         case '+': case '-':
@@ -59,6 +53,8 @@ void TokenStream::clear() {
     full = false;
     buffer = Token();
     exprStream.clear();
-    exprStream.str(""); // Clear the stringstream
-    exprStream.seekg(0); // Reset the stream position to the beginning
+    // Clear the stringstream
+    exprStream.str("");
+    // Reset the stream position to the beginning
+    exprStream.seekg(0);
 }

@@ -3,6 +3,9 @@ ARG CMAKE_VERSION="3.31.6"
 ARG QT_VERSION="6.9.1"
 ARG QT_INSTALLER_VERSION="4.9"
 ARG PROJECT_BUILD_TYPE="Debug"
+ARG APP_VERSION_MAJOR="0"
+ARG APP_VERSION_MINOR="0"
+ARG APP_VERSION_PATCH="0"
 
 # Set base container image
 FROM ubuntu:${BASE_IMAGE_VER} AS prepare-os-stage
@@ -84,6 +87,12 @@ RUN wget https://www.nic.funet.fi/pub/mirrors/download.qt-project.org/archive/on
 FROM install-qt-stage AS build-calculator-stage
 ARG PROJECT_BUILD_TYPE
 ARG QT_VERSION
+ARG APP_VERSION_MAJOR
+ARG APP_VERSION_MINOR
+ARG APP_VERSION_PATCH
+ENV APP_VERSION_MAJOR=${APP_VERSION_MAJOR}
+ENV APP_VERSION_MINOR=${APP_VERSION_MINOR}
+ENV APP_VERSION_PATCH=${APP_VERSION_PATCH}
 # Step 1: set working directory
 WORKDIR /opt/calculator
 COPY . /opt/calculator
