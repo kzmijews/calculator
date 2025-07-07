@@ -73,7 +73,7 @@ To launch the graphical user interface, run:
 This will display the GUI:
 
 <div>
-    <p align="center" width="100%" height=100%>
+    <p align="center" width="100%" height="100%">
         <img src="./imgs/calculator_gui.png" width="60%" height="60%"/>
     </p>
 </div>
