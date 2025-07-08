@@ -23,12 +23,7 @@ jobs:
             --build-arg QT_USERNAME=${{ secrets.QT_USERNAME }} \
             --build-arg QT_PASSWORD=${{ secrets.QT_PASSWORD }} \
             --build-arg BUILD_TYPE=${{ github.event.inputs.build_type }} \
-            -t calculator-build .
-      - name: Extract artifacts from container
-        run: |
-          docker create --name tmp_container calculator-build
-          docker cp tmp_container:/opt/calculator/artifacts ./artifacts
-          docker rm tmp_container
+            --output type=local,dest=./ .
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -37,5 +32,4 @@ jobs:
           retention-days: 7
       - name: Clean up Docker image
         run: |
-          docker rmi calculator-build || true
           docker system prune -f || true
