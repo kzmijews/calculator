@@ -1,0 +1,47 @@
+name: Build (rel)
+on:
+  push:
+    tags:
+      - 'v*.*.*' # Only trigger on version tags like v1.2.3
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Extract version components
+        id: version
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}" # e.g., v1.2.3
+          VERSION="${VERSION#v}" # remove leading "v"
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "MAJOR=$MAJOR" >> "$GITHUB_OUTPUT"
+          echo "MINOR=$MINOR" >> "$GITHUB_OUTPUT"
+          echo "PATCH=$PATCH" >> "$GITHUB_OUTPUT"
+      - name: Build Docker image
+        run: |
+          docker build \
+            -f Dockerfile.build \
+            --build-arg APP_VERSION_MAJOR=${{ steps.version.outputs.MAJOR }} \
+            --build-arg APP_VERSION_MINOR=${{ steps.version.outputs.MINOR }} \
+            --build-arg APP_VERSION_PATCH=${{ steps.version.outputs.PATCH }} \
+            --build-arg QT_USERNAME=${{ secrets.QT_USERNAME }} \
+            --build-arg QT_PASSWORD=${{ secrets.QT_PASSWORD }} \
+            --build-arg BUILD_TYPE=Release \
+            -t calculator-build .
+      - name: Extract artifacts from container
+        run: |
+          docker create --name tmp_container calculator-build
+          docker cp tmp_container:/opt/calculator/artifacts ./artifacts
+          docker rm tmp_container
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ steps.version.outputs.VERSION }}
+          path: ./artifacts
+          retention-days: 7
+      - name: Clean up Docker image
+        run: |
+          docker rmi calculator-build || true
+          docker system prune -f || true
