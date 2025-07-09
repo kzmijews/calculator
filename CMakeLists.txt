@@ -42,7 +42,7 @@ if(NOT APP_VERSION_PATCH)
     set(APP_VERSION_PATCH 0)
 endif()
 set(APP_VERSION_STRING "${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}.${APP_VERSION_PATCH}")
-message(STATUS "Version: ${APP_VERSION}")
+message(STATUS "Version: ${APP_VERSION_STRING}")
 configure_file(
   ${CMAKE_SOURCE_DIR}/include/core/version.hpp.in
   ${CMAKE_SOURCE_DIR}/include/core/version.hpp
@@ -93,19 +93,27 @@ target_link_libraries(
 qt_wrap_ui(UI_HEADERS ${UIS})
 # - DISTRIBUTION SETTINGS
 # -- install rules
+if(NOT DEFINED ARTIFACTS_DIRECTORY)
+    set(ARTIFACTS_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+endif()
+message(STATUS "ARTIFACTS_DIRECTORY: ${ARTIFACTS_DIRECTORY}")
 install(
-  TARGETS calculator
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
+  DIRECTORY ${ARTIFACTS_DIRECTORY} DESTINATION opt/calculator/
 )
 # -- packaging
-set(CPACK_GENERATOR "ZIP")
+set(CPACK_GENERATOR "DEB")
 set(CPACK_PACKAGE_NAME "calculator")
-set(CPACK_PACKAGE_VERSION "${APP_VERSION}")
+set(CPACK_PACKAGE_VERSION "${APP_VERSION_STRING}")
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}_${CPACK_PACKAGE_VERSION}_amd64")
 set(CPACK_PACKAGE_DESCRIPTION "A simple calculator application.")
 set(CPACK_PACKAGE_CONTACT "Karol Zmijewski")
-set(CPACK_PACKAGE_VENDOR "Karol Zmijewski")
+set(CPACK_PACKAGE_VENDOR "${CPACK_PACKAGE_CONTACT}")
+set(CPACK_INSTALL_DIRECTORY "opt/calculator")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "/opt/calculator")
+set(CPACK_PACKAGING_INSTALL_PREFIX "/")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_CONTACT} <karol.zmijewski@gmail.com>")
+set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION}")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libgl1, libegl1, libfontconfig1")
 include(CPack)
 
 message(STATUS "Makefile generated sucessfully, call make command to build the project")

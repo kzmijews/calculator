@@ -131,6 +131,10 @@ in Debug mode.
 ## CMake
 Alternatively, you can configure and build the project directly using the CMake command-line tools:
 ```bash
-cmake -S . -B ./build/debug -DCMAKE_BUILD_TYPE=Debug"
-cmake --build ./build/debug" --config "Debug"
+cmake -S . -B "./build/Debug" -DCMAKE_BUILD_TYPE="Debug"
+cmake --build "./build/Debug" --config "Debug"
+```
+To create `.deb` package:
+```bash
+cpack -G DEB -B "./build/deb" --config "./build/Debug/CPackConfig.cmake"
 ```

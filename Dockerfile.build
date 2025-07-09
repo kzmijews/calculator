@@ -101,7 +101,9 @@ ENV PATH="/opt/calculator/cmake_install/bin:${PATH}"
 ENV Qt6_DIR="/opt/Qt/${QT_VERSION}/gcc_64/lib/cmake/Qt6"
 # Step 3: generate Makefiles
 RUN echo "Step 5: CMake configure" && \
-    cmake -S . -B ./build/${PROJECT_BUILD_TYPE} -DCMAKE_BUILD_TYPE="${PROJECT_BUILD_TYPE}"
+    cmake -S . -B ./build/${PROJECT_BUILD_TYPE} \
+        -DCMAKE_BUILD_TYPE="${PROJECT_BUILD_TYPE}" \
+        -DARTIFACTS_DIRECTORY="${PWD}/calculator/"
 # Step 4: build the project
 RUN echo "Step 6: CMake build" && \
     cmake --build ./build/${PROJECT_BUILD_TYPE} --config "${PROJECT_BUILD_TYPE}"
@@ -124,7 +126,24 @@ RUN echo "Step 9: Create deployment" && \
     ./squashfs-root/AppRun calculator/calculator.desktop \
         -bundle-non-qt-libs
 
+FROM prepare-artifacts-stage AS prepare-deb-pkg-stage
+ARG APP_VERSION_MAJOR
+ARG APP_VERSION_MINOR
+ARG APP_VERSION_PATCH
+# Step 1: set working directory
+WORKDIR /opt/calculator
+# Step 2: prepare deb pkg from binaries
+RUN echo "Step 10: CPack create deb package" && \
+    cpack -G DEB -B ./build/deb --config ./build/${PROJECT_BUILD_TYPE}/CPackConfig.cmake
+# Step 3: create archive with binaries
+RUN echo "Step 11: Create archive with binaries" && \
+    tar -czvf \
+        calculator_${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}.${APP_VERSION_PATCH}.tar.gz \
+        calculator/
+
 FROM scratch AS build-app-output-stage
-COPY --from=prepare-artifacts-stage /opt/calculator/calculator/ /artifacts/
+COPY --from=prepare-deb-pkg-stage /opt/calculator/build/deb/*.deb /artifacts/
+COPY --from=prepare-deb-pkg-stage /opt/calculator/*.tar.gz /artifacts/
+
 # Add fake entrypoint to satisfy docker compose, it's a common practice
 ENTRYPOINT ["./artifacts/AppRun"]
