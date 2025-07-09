@@ -3,6 +3,8 @@ on:
   push:
     tags:
       - 'v*.*.*' # Only trigger on version tags like v1.2.3
+permissions:
+  contents: write  # Required to create releases and upload assets
 jobs:
   build:
     runs-on: ubuntu-latest
