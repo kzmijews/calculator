@@ -33,7 +33,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-${{ steps.version.outputs.VERSION }}
+          name: build-v${{ steps.version.outputs.VERSION }}
           path: ./artifacts
       - name: Clean up Docker image
         run: |
