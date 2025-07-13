@@ -1,30 +1,20 @@
 /**
- * Context-Free Gramar (CFG) example. Set of rules defining correct expression and instruction syntax.
- * Based on BNF (Backus-Naur Form) - notation system for defining the syntax of programming languages
- * and other formal languages. It's a meta-syntax for context-free grammars, providing a precise way
- * to outline the rules od a language's structure. Used to describe document formats, instruction sets
- * and communication protocols. There are also some variations such as EBNF (Extended Backus-Naur Form),
- * and ABNF (Augmented Backus-Naur Form). Consist of three core components:
- * - non-terminal symbols: categories or viarables that can be replaced, represented by names enclosed
- *   in angle brackets (e.g., <expression>, <statement>).
- * - terminal symbols: fixed elements such as keywords, punctuation.
- * - derivation rules: define how non-terminal symbols can be replaced with terminal symbols or other
- *
- * Simplified BNF grammar:
- * expression:
- *     term
- *     expression + term
- *     expression - term
- *
- * term:
- *     primary
- *     primary * term
- *     primary / term
- *
- * primary:
- *     number
- *     ( expression )
- *     - primary
+ * Copyright © 2025 Karol Zmijewski
+
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ * software and associated documentation files (the “Software”), to deal in the Software
+ * without restriction, including without limitation the rights to use, copy, modify, merge,
+ * publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons
+ * to whom the Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
  */
 
 #include <iostream>

@@ -140,3 +140,12 @@ To create `.deb` package:
 ```bash
 cpack -G DEB -B "./build/deb" --config "./build/Debug/CPackConfig.cmake"
 ```
+
+# Release
+To release a new version of the Calculator application, first tag the source code you wish to use
+for the release using [semantic versioning](https://semver.org). Then, push the tag to the repository.
+For example:
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
