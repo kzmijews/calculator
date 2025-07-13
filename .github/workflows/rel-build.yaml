@@ -35,7 +35,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-v${{ steps.version.outputs.VERSION }}
+          name: rel-build-v${{ steps.version.outputs.VERSION }}
           path: ./artifacts
       - name: Clean up Docker image
         run: |
@@ -47,7 +47,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: build-${{ github.ref_name }}
+          name: rel-build-${{ github.ref_name }}
           path: artifacts/
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
