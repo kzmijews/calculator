@@ -29,88 +29,90 @@
 // external library headers
 #include "cxxopts.hpp"
 
-/**
- * Interactive mode for the calculator.
- * This function allows users to enter expressions and get results in a console.
- * It handles various exceptions and provides feedback on errors.
- * @return 0 on success, non-zero on error.
- */
-int interactiveMode() {
-    Calculator calculator;
-    double value = 0.0;
-    std::cout << "Enter expression (or q to quit): " << std::endl;
-    std::cout << "> ";
-    while (true) {
-        try {
-            std::string input = "";
-            getline(std::cin, input);
-            calculator << input;
-            value = calculator.expression();
-            std::cout << "= " << value << std::endl;
-            std::cout << "> ";
-        } catch(const EndOfExpression& e) {
-            continue;
-        } catch(const InvalidExpression& e) {
-            std::cerr << "Invalid expression: " << e.what() << std::endl;
-            calculator.reset();
-            continue;
-        } catch(const EndOfExecution& e) {
-            std::cout << "Exiting calculator." << std::endl;
-            break;
-        } catch(const std::runtime_error& e) {
-            std::cerr << "Runtime error: " << e.what() << std::endl;
-            calculator.reset();
-            continue;
-        } catch(const std::exception& e) {
-            std::cerr << "An error occurred: " << e.what() << std::endl;
-            calculator.reset();
-            continue;
+namespace {
+    /**
+     * Interactive mode for the calculator.
+     * This function allows users to enter expressions and get results in a console.
+     * It handles various exceptions and provides feedback on errors.
+     * @return 0 on success, non-zero on error.
+     */
+    int interactiveMode() {
+        kz::calc::core::Calculator calculator;
+        double value = 0.0;
+        std::cout << "Enter expression (or q to quit): " << std::endl;
+        std::cout << "> ";
+        while (true) {
+            try {
+                std::string input = "";
+                getline(std::cin, input);
+                calculator << input;
+                value = calculator.expression();
+                std::cout << "= " << value << std::endl;
+                std::cout << "> ";
+            } catch(const kz::calc::core::EndOfExpression& e) {
+                continue;
+            } catch(const kz::calc::core::InvalidExpression& e) {
+                std::cerr << "Invalid expression: " << e.what() << std::endl;
+                calculator.reset();
+                continue;
+            } catch(const kz::calc::core::EndOfExecution& e) {
+                std::cout << "Exiting calculator." << std::endl;
+                break;
+            } catch(const std::runtime_error& e) {
+                std::cerr << "Runtime error: " << e.what() << std::endl;
+                calculator.reset();
+                continue;
+            } catch(const std::exception& e) {
+                std::cerr << "An error occurred: " << e.what() << std::endl;
+                calculator.reset();
+                continue;
+            }
         }
+        return 0;
     }
-    return 0;
-}
 
-/**
- * Executes a single expression in the calculator.
- * This function evaluates the provided expression and prints the result.
- * It handles exceptions related to invalid expressions and end of execution.
- * @param expression The expression to evaluate.
- * @return 0 on success, non-zero on error.
- */
-int executeMode(std::string expression) {
-    Calculator calculator;
-    try {
-        calculator << expression;
-        double result = calculator.expression();
-        std::cout << "Result: " << result << std::endl;
-    } catch (const InvalidExpression& e) {
-        std::cerr << "Invalid expression: " << e.what() << std::endl;
-        return 1;
-    } catch (const EndOfExecution& e) {
-        std::cout << "Exiting calculator." << std::endl;
-    } catch (const std::exception& e) {
-        std::cerr << "An error occurred: " << e.what() << std::endl;
-        return 1;
+    /**
+     * Executes a single expression in the calculator.
+     * This function evaluates the provided expression and prints the result.
+     * It handles exceptions related to invalid expressions and end of execution.
+     * @param expression The expression to evaluate.
+     * @return 0 on success, non-zero on error.
+     */
+    int executeMode(std::string expression) {
+        kz::calc::core::Calculator calculator;
+        try {
+            calculator << expression;
+            double result = calculator.expression();
+            std::cout << "Result: " << result << std::endl;
+        } catch (const kz::calc::core::InvalidExpression& e) {
+            std::cerr << "Invalid expression: " << e.what() << std::endl;
+            return 1;
+        } catch (const kz::calc::core::EndOfExecution& e) {
+            std::cout << "Exiting calculator." << std::endl;
+        } catch (const std::exception& e) {
+            std::cerr << "An error occurred: " << e.what() << std::endl;
+            return 1;
+        }
+        return 0;
     }
-    return 0;
-}
 
-/**
- * Launches the calculator with a user interface (GUI).
- * This function initializes the Qt application and sets up the main window for the calculator.
- * It uses the CalculatorUi class to manage the user interface.
- * @param argc The number of command line arguments.
- * @param argv The command line arguments.
- * @return The exit code of the application.
- *         Returns 0 on successful execution, or a non-zero value on error.
- */
-int uiMode(int argc, char* argv[]) {
-    QApplication app(argc, argv);
-    Calculator calculator;
-    Ui::CalculatorUi calculatorUi(calculator);
-    calculatorUi.setup();
-    calculatorUi.getMainWindow()->show();
-    return app.exec();
+    /**
+     * Launches the calculator with a user interface (GUI).
+     * This function initializes the Qt application and sets up the main window for the calculator.
+     * It uses the CalculatorUi class to manage the user interface.
+     * @param argc The number of command line arguments.
+     * @param argv The command line arguments.
+     * @return The exit code of the application.
+     *         Returns 0 on successful execution, or a non-zero value on error.
+     */
+    int uiMode(int argc, char* argv[]) {
+        QApplication app(argc, argv);
+        kz::calc::core::Calculator calculator;
+        kz::calc::ui::CalculatorUi calculatorUi(calculator);
+        calculatorUi.setup();
+        calculatorUi.getMainWindow()->show();
+        return app.exec();
+    }
 }
 
 int main(int argc, char* argv[]) {

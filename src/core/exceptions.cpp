@@ -20,8 +20,10 @@
  //app headers
 #include "exceptions.hpp"
 
-InvalidExpression::InvalidExpression(const std::string& msg) : message(msg) { }
+namespace kz::calc::core {
+    InvalidExpression::InvalidExpression(const std::string& msg) : message(msg) { }
 
-const char* InvalidExpression::what() const noexcept {
-    return message.c_str();
+    const char* InvalidExpression::what() const noexcept {
+        return message.c_str();
+    }
 }
