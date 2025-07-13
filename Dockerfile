@@ -5,16 +5,15 @@ FROM ubuntu:${BASE_IMAGE_VER} AS deployment-stage
 ARG ARTIFACTS_PATH
 # Step 1: set working directory
 WORKDIR /opt/calculator
-# Step 2: install dependencies
+# Step 2: copy artifacts
+RUN mkdir -p /tmp/calculator
+COPY ${ARTIFACTS_PATH}/* /tmp/calculator/
+# Step 3: install calculator app
 RUN apt update && apt install -y \
-    libegl1 \
-    libfontconfig1 \
-    libgl1
-# Step 3: copy artifacts
-RUN mkdir -p /opt/calculator
-COPY ${ARTIFACTS_PATH}/* /opt/calculator/
+    /tmp/calculator/calculator_*.deb
 
 FROM deployment-stage AS final-stage
 ENV APP_ARGS="-u"
+RUN chmod +x /opt/calculator/AppRun
 # Step 1: set entrypoint
-ENTRYPOINT ["sh", "-c", "./bin/calculator $APP_ARGS"]
+ENTRYPOINT ["sh", "-c", "/opt/calculator/AppRun $APP_ARGS"]
