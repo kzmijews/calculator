@@ -29,8 +29,6 @@
 // external library headers
 #include "cxxopts.hpp"
 
-using namespace std;
-
 /**
  * Interactive mode for the calculator.
  * This function allows users to enter expressions and get results in a console.
@@ -40,31 +38,31 @@ using namespace std;
 int interactiveMode() {
     Calculator calculator;
     double value = 0.0;
-    cout << "Enter expression (or q to quit): " << endl;
-    cout << "> ";
+    std::cout << "Enter expression (or q to quit): " << std::endl;
+    std::cout << "> ";
     while (true) {
         try {
-            string input = "";
-            getline(cin, input);
+            std::string input = "";
+            getline(std::cin, input);
             calculator << input;
             value = calculator.expression();
-            cout << "= " << value << endl;
-            cout << "> ";
+            std::cout << "= " << value << std::endl;
+            std::cout << "> ";
         } catch(const EndOfExpression& e) {
             continue;
         } catch(const InvalidExpression& e) {
-            cerr << "Invalid expression: " << e.what() << endl;
+            std::cerr << "Invalid expression: " << e.what() << std::endl;
             calculator.reset();
             continue;
         } catch(const EndOfExecution& e) {
-            cout << "Exiting calculator." << endl;
+            std::cout << "Exiting calculator." << std::endl;
             break;
-        } catch(const runtime_error& e) {
-            cerr << "Runtime error: " << e.what() << endl;
+        } catch(const std::runtime_error& e) {
+            std::cerr << "Runtime error: " << e.what() << std::endl;
             calculator.reset();
             continue;
-        } catch(const exception& e) {
-            cerr << "An error occurred: " << e.what() << endl;
+        } catch(const std::exception& e) {
+            std::cerr << "An error occurred: " << e.what() << std::endl;
             calculator.reset();
             continue;
         }
@@ -79,19 +77,19 @@ int interactiveMode() {
  * @param expression The expression to evaluate.
  * @return 0 on success, non-zero on error.
  */
-int executeMode(string expression) {
+int executeMode(std::string expression) {
     Calculator calculator;
     try {
         calculator << expression;
         double result = calculator.expression();
-        cout << "Result: " << result << endl;
+        std::cout << "Result: " << result << std::endl;
     } catch (const InvalidExpression& e) {
-        cerr << "Invalid expression: " << e.what() << endl;
+        std::cerr << "Invalid expression: " << e.what() << std::endl;
         return 1;
     } catch (const EndOfExecution& e) {
-        cout << "Exiting calculator." << endl;
-    } catch (const exception& e) {
-        cerr << "An error occurred: " << e.what() << endl;
+        std::cout << "Exiting calculator." << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "An error occurred: " << e.what() << std::endl;
         return 1;
     }
     return 0;
@@ -123,26 +121,26 @@ int main(int argc, char* argv[]) {
         ("u,user-interface", "Launch the calculator with a user interface (GUI)")
         ("i,interactive", "Launch in interactive (console) mode");
     options.add_options("Expression")
-        ("e,expression", "Expression to evaluate", cxxopts::value<string>());
+        ("e,expression", "Expression to evaluate", cxxopts::value<std::string>());
     auto args = options.parse(argc, argv);
     if (args.count("help")) {
-        cout << options.help() << endl;
+        std::cout << options.help() << std::endl;
         return 0;
     }
     if (args.count("version")) {
-        cout << "Calculator version: " << APP_VERSION_STRING << endl;
+        std::cout << "Calculator version: " << APP_VERSION_STRING << std::endl;
         return 0;
     }
     if (args.count("interactive")) {
-        cout << "Launching calculator in interactive mode." << endl;
+        std::cout << "Launching calculator in interactive mode." << std::endl;
         return interactiveMode();
     } else if (args.count("expression")) {
-        string expression = args["expression"].as<string>();
+        std::string expression = args["expression"].as<std::string>();
         return executeMode(expression);
     } else if (args.count("user-interface")) {
-        cout << "Launching calculator with user interface (GUI)." << endl;
+        std::cout << "Launching calculator with user interface (GUI)." << std::endl;
         return uiMode(argc, argv);
     }
-    cout << "No expression provided. Use -h or --help for usage information." << endl;
+    std::cout << "No expression provided. Use -h or --help for usage information." << std::endl;
     return 1;
 }

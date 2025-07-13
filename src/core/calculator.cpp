@@ -17,14 +17,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+ // standard library headers
 #include <iostream>
 #include <string>
+// app headers
 #include "token.hpp"
 #include "exceptions.hpp"
 #include "calculator.hpp"
 #include "tstream.hpp"
-
-using namespace std;
 
 double Calculator::expression() {
     double lvalue = term(); // Start with the first term
@@ -40,7 +40,7 @@ double Calculator::expression() {
             break;
         } else if (token_type == TokenType::UNKNOWN) {
             // Handle unknown token
-            throw InvalidExpression("Unknown token encountered: '" + to_string(etov(token_type)) + "'");
+            throw InvalidExpression("Unknown token encountered: '" + std::to_string(etov(token_type)) + "'");
         } else {
             // If the token is not an operator, push it back to the stream
             // for further processing
@@ -95,5 +95,5 @@ double Calculator::primary() {
     } else if (token_type == TokenType::END) {
         throw EndOfExecution();
     }
-    throw  InvalidExpression("Unexpected token: '" + to_string(etov(token.getType())) + "'");
+    throw  InvalidExpression("Unexpected token: '" + std::to_string(etov(token.getType())) + "'");
 }

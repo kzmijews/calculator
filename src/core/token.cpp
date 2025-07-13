@@ -17,10 +17,10 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+// standard library headers
 #include <iostream>
+// app headers
 #include "token.hpp"
-
-using namespace std;
 
 Token::Token(char sign): type(static_cast<TokenType>(sign)), value(0.0) {
     if (isNumber()) {

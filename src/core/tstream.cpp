@@ -23,8 +23,6 @@
 #include "token.hpp"
 #include "tstream.hpp"
 
-using namespace std;
-
 Token TokenStream::pop() {
     if (full) {
         full = false;
@@ -54,7 +52,7 @@ Token TokenStream::pop() {
 
 void TokenStream::push(Token token) {
     if (full) {
-        cerr << "TokenStream buffer is full, cannot push token." << endl;
+        std::cerr << "TokenStream buffer is full, cannot push token." << std::endl;
     } else {
         full = true;
         buffer = token;
