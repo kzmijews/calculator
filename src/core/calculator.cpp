@@ -30,19 +30,19 @@ namespace kz::calc::core {
     double Calculator::expression() {
         double lvalue = term(); // Start with the first term
         while (true) {
-            kz::calc::core::Token token = ts.pop();
-            kz::calc::core::TokenType token_type = token.getType();
-            if (token_type == kz::calc::core::TokenType::PLUS) {
+            Token token = ts.pop();
+            TokenType token_type = token.getType();
+            if (token_type == TokenType::PLUS) {
                 lvalue += term();
-            } else if (token_type == kz::calc::core::TokenType::MINUS) {
+            } else if (token_type == TokenType::MINUS) {
                 lvalue -= term();
-            } else if (token_type == kz::calc::core::TokenType::END) {
+            } else if (token_type == TokenType::END) {
                 // End of expression, return the result
                 break;
-            } else if (token_type == kz::calc::core::TokenType::UNKNOWN) {
+            } else if (token_type == TokenType::UNKNOWN) {
                 // Handle unknown token
-                throw kz::calc::core::InvalidExpression(
-                    "Unknown token encountered: '" + std::to_string(kz::calc::core::etov(token_type)) + "'"
+                throw InvalidExpression(
+                    "Unknown token encountered: '" + std::to_string(etov(token_type)) + "'"
                 );
             } else {
                 // If the token is not an operator, push it back to the stream
@@ -59,12 +59,12 @@ namespace kz::calc::core {
         while(true) {
             Token token = ts.pop();
             TokenType token_kind = token.getType();
-            if (token_kind == kz::calc::core::TokenType::MULTIPLY) {
+            if (token_kind == TokenType::MULTIPLY) {
                 lvalue *= primary();
-            } else if (token_kind == kz::calc::core::TokenType::DIVIDE) {
+            } else if (token_kind == TokenType::DIVIDE) {
                 double divisor = primary();
                 if (divisor == 0) {
-                    throw kz::calc::core::InvalidExpression("Division by zero is not allowed.");
+                    throw InvalidExpression("Division by zero is not allowed.");
                 }
                 lvalue /= divisor;
             } else {
@@ -80,26 +80,26 @@ namespace kz::calc::core {
     double Calculator::primary() {
         Token token = ts.pop();
         TokenType token_type = token.getType();
-        if (token_type == kz::calc::core::TokenType::NUMBER) {
+        if (token_type == TokenType::NUMBER) {
             return token.getValue();
-        } else if (token_type == kz::calc::core::TokenType::LEFT_PAREN) {
+        } else if (token_type == TokenType::LEFT_PAREN) {
             double lvalue = expression();
             // Expecting a right parenthesis
             token = ts.pop();
             token_type = token.getType();
-            if (token_type != kz::calc::core::TokenType::RIGHT_PAREN) {
-                throw kz::calc::core::InvalidExpression("Expected right parenthesis: ')'");
+            if (token_type != TokenType::RIGHT_PAREN) {
+                throw InvalidExpression("Expected right parenthesis: ')'");
             }
             return lvalue;
-        } else if (token_type == kz::calc::core::TokenType::MINUS) {
+        } else if (token_type == TokenType::MINUS) {
             return -primary();
-        } else if (token_type == kz::calc::core::TokenType::QUIT) {
-            throw kz::calc::core::EndOfExecution();
-        } else if (token_type == kz::calc::core::TokenType::END) {
-            throw kz::calc::core::EndOfExecution();
+        } else if (token_type == TokenType::QUIT) {
+            throw EndOfExecution();
+        } else if (token_type == TokenType::END) {
+            throw EndOfExecution();
         }
-        throw  kz::calc::core::InvalidExpression(
-            "Unexpected token: '" + std::to_string(kz::calc::core::etov(token.getType())) + "'"
+        throw InvalidExpression(
+            "Unexpected token: '" + std::to_string(etov(token.getType())) + "'"
         );
     }
-}
+} // namespace kz::calc::core
