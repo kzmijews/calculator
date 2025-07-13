@@ -33,19 +33,21 @@ sudo docker build \
 The build output will be available in the `./artifacts` directory.
 
 # Run
-To run the application, essential OpenGL-related libraries are required. You can install
-them using the following command:
+To run the application, essential OpenGL-related libraries are required. These libraries
+will be installed automatically during the installation of the Calculator `.deb` package:
 ```bash
-sudo apt update && apt install -y \
-    libgl1 \
-    libegl1 \
-    libfontconfig1
+apt install -y ./artifacts/calculator_*.deb
+```
+Once installed, you can launch the application by running:
+```bash
+cd /opt/calculator/usr/bin/
+./calculator -u
 ```
 Alternatively, the application can be containerized with Docker:
 ```bash
 docker build -t calculator .
 ```
-And run from within the container:
+To run the application from within the Docker container:
 ```bash
 xhost +local:docker
 docker run \
