@@ -17,8 +17,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef CLISTREAM_H
-#define CLISTREAM_H
+#ifndef TSTREAM_H
+#define TSTREAM_H
 
 // standard library headers
 #include <sstream>
@@ -26,12 +26,10 @@
 #include "tstream.hpp"
 #include "token.hpp"
 
-using namespace std;
-
 class TokenStream {
 private:
     bool full;
-    stringstream exprStream;
+    std::stringstream exprStream;
     Token buffer;
 public:
     TokenStream(): full(false), buffer(Token()) {};
@@ -76,4 +74,4 @@ public:
     }
 };
 
-#endif /* !CLISTREAM_H! */
+#endif /* !TSTREAM_H! */

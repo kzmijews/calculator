@@ -36,11 +36,11 @@ void Ui::CalculatorUi::keyboardButtonClicked(QTextBrowser* resultBrowser, const 
             resultBrowser->insertPlainText(QString::number(result));
         } catch (const InvalidExpression& e) {
             resultBrowser->setText("ERR: invalid/unsupported");
-            cout << "Error: " << e.what() << endl;
+            std::cout << "Error: " << e.what() << std::endl;
             calculator.reset();
         } catch (const std::runtime_error& e) {
             resultBrowser->setText("ERR: unexpected error");
-            cout << "Error: " << e.what() << endl;
+            std::cout << "Error: " << e.what() << std::endl;
             calculator.reset();
         }
     } else if (text == "x") {

@@ -24,18 +24,16 @@
 #include <stdexcept>
 #include <string>
 
-using namespace std;
-
 class InvalidExpression : public std::exception {
 private:
-    string message;
+    std::string message;
 public:
     /**
      * Constructor for InvalidExpression exception.
      * Initializes the exception with a specific message.
      * @param msg The message describing the invalid expression.
      */
-    explicit InvalidExpression(const string& msg);
+    explicit InvalidExpression(const std::string& msg);
     /**
      * Destructor for InvalidExpression exception.
      * Cleans up the exception instance.
