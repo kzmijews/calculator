@@ -1,3 +1,47 @@
+# Overview
+This implementation of the Calculator App uses a **Context-Free Grammar (CFG)** to define
+the structure of valid expressions and instructions. **CFG** is a formal set of production
+rules that describe how expressions in a language can be formed.
+
+The grammar is based on **BNF (Backus-Naur Form)** — a notation used to formally specify
+the syntax of programming languages and other structured formats. **BNF** is considered
+a meta-syntax, meaning it provides a systematic way to describe the rules that govern the
+structure of a language. It is commonly used for defining document formats, instruction
+sets, and communication protocols.
+
+There are several variations of **BNF**, including:
+- **EBNF (Extended Backus-Naur Form)** – introduces additional syntactic sugar for readability.
+- **ABNF (Augmented Backus-Naur Form)** – often used in internet protocol specifications.
+
+BNF-based grammars consist of three fundamental components:
+- **Non-terminal symbols** – These represent abstract language constructs and are typically
+enclosed in angle brackets (e.g., <expression>, <term>). They can be replaced by other
+non-terminals or terminals according to the grammar rules.
+- **Terminal symbols** – These are the actual symbols or keywords used in the language
+(e.g., +, -, numbers, parentheses).
+- **Production rules (derivations)** – These define how non-terminal symbols can be rewritten
+as a combination of terminals and/or non-terminals.
+
+Simplified BNF Grammar of the Calculator:
+
+```
+<expression> ::= <term>
+              | <expression> + <term>
+              | <expression> - <term>
+
+<term>       ::= <primary>
+              | <primary> * <term>
+              | <primary> / <term>
+
+<primary>    ::= <number>
+              | ( <expression> )
+              | - <primary>
+```
+
+This grammar allows for arithmetic expressions using addition, subtraction, multiplication,
+division, parentheses, and unary negation. Parsing is done recursively, reflecting the
+hierarchical structure defined by these grammar rules.
+
 # Build
 To build this project, a few prerequisites are required:
 - Qt 6.9.1 (used for the GUI)
