@@ -1,4 +1,7 @@
 # Overview
+
+> ⚠️ **Warning**: This project is not fully functional yet. Stay tuned for updates!
+
 This implementation of the Calculator App uses a **Context-Free Grammar (CFG)** to define
 the structure of valid expressions and instructions. **CFG** is a formal set of production
 rules that describe how expressions in a language can be formed.
