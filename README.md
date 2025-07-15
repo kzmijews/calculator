@@ -1,5 +1,8 @@
 # Overview
 
+[![ci](https://github.com/kzmijews/calculator/actions/workflows/rel-build.yaml/badge.svg)](https://github.com/kzmijews/calculator/actions/workflows/rel-build.yaml)&nbsp;
+[![Release](https://img.shields.io/github/v/release/kzmijews/calculator.svg)](https://github.com/kzmijews/calculator/releases/latest)
+
 > ⚠️ **Warning**: This project is not fully functional yet. Stay tuned for updates!
 
 This implementation of the Calculator App uses a **Context-Free Grammar (CFG)** to define
