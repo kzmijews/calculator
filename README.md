@@ -53,6 +53,7 @@ To build this project, a few prerequisites are required:
 - Qt 6.9.1 (used for the GUI)
 - g++ compiler
 - CMake build tools
+- CXXOPTS library (header), SPDLOG library (static lib)
 
 To simplify the build process and ensure consistency, the entire build environment is isolated
 within a Docker container. The Dockerfile is structured into multiple stages to enable layer
@@ -162,6 +163,21 @@ Exiting calculator.
 # Development
 If you prefer to set up the development environment directly on your host machine for greater
 control during development, follow the tips below.
+
+## Prerequisites
+This project requires the following external dependencies:
+- CXXOPTS: Header-only library
+- SPDLOG: Static library
+- Qt 6 Framework: Essential modules
+
+Ensure that the following environment variables are set to the appropriate paths where these
+dependencies are located. For example:
+
+```bash
+export Qt6_DIR="/opt/Qt/6.9.1/gcc_64/lib/cmake/Qt6"
+export SPDLOG_DIR="/opt/spdlog/lib"
+export CXXOPTS_H_DIR="/opt/cxxops/header"
+```
 
 ## Visual Studio Code
 Recommended configuration files are provided in the `./.vscode` directory. These allow you to:

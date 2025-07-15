@@ -40,6 +40,7 @@ if(NOT CMAKE_BUILD_TYPE)
 else()
   message(STATUS "- Build type: ${CMAKE_BUILD_TYPE}")
 endif()
+
 # - APP SETTINGS
 # -- version information
 set(APP_VERSION_MAJOR $ENV{APP_VERSION_MAJOR})
@@ -64,11 +65,19 @@ configure_file(
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+# -- header settings
+# --- set CXXOPS include directory
+if(NOT DEFINED ENV{CXXOPTS_H_DIR})
+  message(FATAL_ERROR "CXXOPTS_H_DIR environment variable is not set. Please set it to the CXXOPS header file directory.")
+else()
+  set(CXXOPTS_H_DIR "$ENV{CXXOPTS_H_DIR}")
+  message(STATUS "- CXXOPTS include directory: ${CXXOPTS_H_DIR}")
+endif()
 # -- include directories
 include_directories(
   ${CMAKE_SOURCE_DIR}/include/core
-  ${CMAKE_SOURCE_DIR}/include/cxxopts
   ${CMAKE_SOURCE_DIR}/include/ui
+  ${CXXOPTS_H_DIR}
 )
 # -- source files
 file(
@@ -84,12 +93,7 @@ set(
 )
 # -- executable target
 add_executable(calculator ${SOURCES})
-# -- link libraries
-if(MSVC)
-  target_link_libraries(calculator PRIVATE msvcrt)
-else()
-  target_link_libraries(calculator PRIVATE m)
-endif()
+# - external dependency settings
 # -- Qt6 settings
 if(NOT DEFINED CMAKE_PREFIX_PATH AND DEFINED ENV{Qt6_DIR})
   set(CMAKE_PREFIX_PATH "$ENV{Qt6_DIR}")
@@ -105,14 +109,22 @@ else()
   set(SPDLOG_DIR "$ENV{SPDLOG_DIR}")
   message(STATUS "- SPDLOG_DIR: ${SPDLOG_DIR}")
 endif()
-# link libraries
+# - link libraries
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 target_link_libraries(
   calculator PRIVATE
   Qt6::Widgets
   ${SPDLOG_DIR}/libspdlog.a
 )
+if(MSVC)
+  # -- link windows only libraries
+  target_link_libraries(calculator PRIVATE msvcrt)
+else()
+  # -- link linux only libraries
+  target_link_libraries(calculator PRIVATE m)
+endif()
 qt_wrap_ui(UI_HEADERS ${UIS})
+
 # - DISTRIBUTION SETTINGS
 # -- install rules
 if(NOT DEFINED ARTIFACTS_DIRECTORY)
@@ -137,5 +149,4 @@ set(CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_CONTACT} <karol.zmijewski@g
 set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION}")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libgl1, libegl1, libfontconfig1")
 include(CPack)
-
 message(STATUS "Makefile generated sucessfully, call make command to build the project")

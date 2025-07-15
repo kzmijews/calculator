@@ -20,6 +20,7 @@ ARG CMAKE_VERSION="3.31.6"
 ARG QT_VERSION="6.9.1"
 ARG QT_INSTALLER_VERSION="4.9"
 ARG SPDLOG_VERSION="1.15.2"
+ARG CXXOPS_VERSION="3.3.1"
 ARG PROJECT_BUILD_TYPE="Debug"
 ARG APP_VERSION_MAJOR="0"
 ARG APP_VERSION_MINOR="0"
@@ -119,7 +120,19 @@ RUN wget https://github.com/gabime/spdlog/archive/refs/tags/v${SPDLOG_VERSION}.t
     mkdir -p /opt/calculator/lib && \
     cp libspdlog.a /opt/calculator/lib/libspdlog.a
 
-FROM install-spdlog-stage AS build-calculator-stage
+FROM install-spdlog-stage AS install-cxxopts-stage
+# Redefined build args to make them visible at this stage
+ARG CXXOPS_VERSION
+# Step 1: set working directory
+WORKDIR /opt/calculator
+# Step 2: download and install cxxopts
+RUN echo "Step 6: Download and install cxxopts ${CXXOPS_VERSION}"
+RUN wget https://github.com/jarro2783/cxxopts/archive/refs/tags/v${CXXOPS_VERSION}.tar.gz -O cxxopts.tar.gz && \
+    tar -xzf cxxopts.tar.gz && \
+    mkdir -p /opt/calculator/include/cxxopts && \
+    cp cxxopts-${CXXOPS_VERSION}/include/cxxopts.hpp /opt/calculator/include/cxxopts/cxxopts.hpp
+
+FROM install-cxxopts-stage AS build-calculator-stage
 ARG PROJECT_BUILD_TYPE
 ARG QT_VERSION
 ARG SPDLOG_VERSION
@@ -136,6 +149,7 @@ COPY . /opt/calculator
 ENV PATH="/opt/calculator/cmake_install/bin:${PATH}"
 ENV Qt6_DIR="/opt/Qt/${QT_VERSION}/gcc_64/lib/cmake/Qt6"
 ENV SPDLOG_DIR="/opt/calculator/lib"
+ENV CXXOPTS_H_DIR="/opt/calculator/include/cxxopts"
 # Step 3: generate Makefiles
 RUN echo "Step 6: CMake configure" && \
     cmake -S . -B ./build/${PROJECT_BUILD_TYPE} \
