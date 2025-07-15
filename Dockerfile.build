@@ -19,6 +19,7 @@ ARG BASE_IMAGE_VER="22.04"
 ARG CMAKE_VERSION="3.31.6"
 ARG QT_VERSION="6.9.1"
 ARG QT_INSTALLER_VERSION="4.9"
+ARG SPDLOG_VERSION="1.15.2"
 ARG PROJECT_BUILD_TYPE="Debug"
 ARG APP_VERSION_MAJOR="0"
 ARG APP_VERSION_MINOR="0"
@@ -101,9 +102,27 @@ RUN wget https://www.nic.funet.fi/pub/mirrors/download.qt-project.org/archive/on
         --verbose \
         install qt${QT_VERSION}-essentials
 
-FROM install-qt-stage AS build-calculator-stage
+FROM install-qt-stage AS install-spdlog-stage
+# Redefined build args to make them visible at this stage
+ARG SPDLOG_VERSION
+# Step 1: set working directory
+WORKDIR /opt/calculator
+# Step 2: set environment variables
+ENV PATH="/opt/calculator/cmake_install/bin:${PATH}"
+# Step 3: download and install spdlog
+RUN echo "Step 5: Download and install spdlog ${SPDLOG_VERSION}"
+RUN wget https://github.com/gabime/spdlog/archive/refs/tags/v${SPDLOG_VERSION}.tar.gz -O spdlog.tar.gz && \
+    tar -xzf spdlog.tar.gz && \
+    cd spdlog-${SPDLOG_VERSION} && \
+    mkdir build && cd build && \
+    cmake .. -DCMAKE_BUILD_TYPE=Release && cmake --build . && \
+    mkdir -p /opt/calculator/lib && \
+    cp libspdlog.a /opt/calculator/lib/libspdlog.a
+
+FROM install-spdlog-stage AS build-calculator-stage
 ARG PROJECT_BUILD_TYPE
 ARG QT_VERSION
+ARG SPDLOG_VERSION
 ARG APP_VERSION_MAJOR
 ARG APP_VERSION_MINOR
 ARG APP_VERSION_PATCH
@@ -116,13 +135,14 @@ COPY . /opt/calculator
 # Step 2: set environment variables for Qt
 ENV PATH="/opt/calculator/cmake_install/bin:${PATH}"
 ENV Qt6_DIR="/opt/Qt/${QT_VERSION}/gcc_64/lib/cmake/Qt6"
+ENV SPDLOG_DIR="/opt/calculator/lib"
 # Step 3: generate Makefiles
-RUN echo "Step 5: CMake configure" && \
+RUN echo "Step 6: CMake configure" && \
     cmake -S . -B ./build/${PROJECT_BUILD_TYPE} \
         -DCMAKE_BUILD_TYPE="${PROJECT_BUILD_TYPE}" \
         -DARTIFACTS_DIRECTORY="${PWD}/calculator/"
 # Step 4: build the project
-RUN echo "Step 6: CMake build" && \
+RUN echo "Step 7: CMake build" && \
     cmake --build ./build/${PROJECT_BUILD_TYPE} --config "${PROJECT_BUILD_TYPE}"
 
 FROM build-calculator-stage AS prepare-artifacts-stage
@@ -132,14 +152,14 @@ ENV PATH="/opt/Qt/${QT_VERSION}/gcc_64/bin:${PATH}"
 # Step 1: set working directory
 WORKDIR /opt/calculator
 # Step 2: make linuxdeploy executable and prepare artifacts directory
-RUN echo "Step 7: Prepare artifacts directory" && \
+RUN echo "Step 8: Prepare artifacts directory" && \
     mkdir -p calculator/usr/bin/ && \
     cp ./build/${PROJECT_BUILD_TYPE}/bin/calculator calculator/usr/bin/ && \
     cp ./calculator.desktop calculator/ && \
     cp ./imgs/icon.svg calculator/calculator.svg
-RUN echo "Step 8: Prepare linuxdeploy" && \
+RUN echo "Step 9: Prepare linuxdeploy" && \
     ./linuxdeployqt.AppImage --appimage-extract
-RUN echo "Step 9: Create deployment" && \
+RUN echo "Step 10: Create deployment" && \
     ./squashfs-root/AppRun calculator/calculator.desktop \
         -bundle-non-qt-libs
 
@@ -150,17 +170,17 @@ ARG APP_VERSION_PATCH
 # Step 1: set working directory
 WORKDIR /opt/calculator
 # Step 2: prepare deb pkg from binaries
-RUN echo "Step 10: CPack create deb package" && \
+RUN echo "Step 11: CPack create deb package" && \
     cpack -G DEB -B ./build/deb --config ./build/${PROJECT_BUILD_TYPE}/CPackConfig.cmake
 # Step 3: create archive with binaries
-RUN echo "Step 11: Create archive with binaries" && \
+RUN echo "Step 12: Create archive with binaries" && \
     tar -czvf \
         calculator_${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}.${APP_VERSION_PATCH}.tar.gz \
         calculator/
 
 FROM scratch AS build-app-output-stage
-COPY --from=prepare-deb-pkg-stage /opt/calculator/build/deb/*.deb /artifacts/
-COPY --from=prepare-deb-pkg-stage /opt/calculator/*.tar.gz /artifacts/
+COPY --from=prepare-deb-pkg-stage /opt/calculator/build/deb/calculator*.deb /artifacts/
+COPY --from=prepare-deb-pkg-stage /opt/calculator/calculator*.tar.gz /artifacts/
 
 # Add fake entrypoint to satisfy docker compose, it's a common practice
 ENTRYPOINT ["./artifacts/AppRun"]

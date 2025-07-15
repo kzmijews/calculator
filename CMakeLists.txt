@@ -98,10 +98,19 @@ elseif(NOT DEFINED CMAKE_PREFIX_PATH)
 else()
   message(STATUS "- Qt6_DIR: ${CMAKE_PREFIX_PATH}")
 endif()
+# - SPDLOG settings
+if(NOT DEFINED ENV{SPDLOG_DIR})
+  message(FATAL_ERROR "SPDLOG_DIR environment variable is not set. Please set it to the SPDLOG installation directory.")
+else()
+  set(SPDLOG_DIR "$ENV{SPDLOG_DIR}")
+  message(STATUS "- SPDLOG_DIR: ${SPDLOG_DIR}")
+endif()
+# link libraries
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 target_link_libraries(
   calculator PRIVATE
   Qt6::Widgets
+  ${SPDLOG_DIR}/libspdlog.a
 )
 qt_wrap_ui(UI_HEADERS ${UIS})
 # - DISTRIBUTION SETTINGS
