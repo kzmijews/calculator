@@ -27,6 +27,10 @@
 // generated headers by CMake
 #include "version.hpp"
 // external library headers
+#include "spdlog/cfg/env.h"
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+#include "spdlog/sinks/basic_file_sink.h"
 #include "cxxopts.hpp"
 
 namespace {
@@ -108,14 +112,41 @@ namespace {
     int uiMode(int argc, char* argv[]) {
         QApplication app(argc, argv);
         kz::calc::core::Calculator calculator;
-        kz::calc::ui::CalculatorUi calculatorUi(calculator);
-        calculatorUi.setup();
-        calculatorUi.getMainWindow()->show();
+        kz::calc::ui::CalculatorUi calculator_ui(calculator);
+        calculator_ui.setup();
+        calculator_ui.getMainWindow()->show();
         return app.exec();
+    }
+
+    void configure_logger() {
+        // Console logger setup
+        auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+        const char* cll_env = std::getenv("CONSOLE_LOG_LEVEL");
+        spdlog::level::level_enum cll = (cll_env) ? spdlog::level::from_str(cll_env) : spdlog::level::warn;
+        console_sink->set_level(cll);
+        auto console_logger = std::make_shared<spdlog::logger>("console", console_sink);
+        console_logger->set_pattern("[%T] [%^%l%$] %v");
+        spdlog::register_logger(console_logger);
+        // File logger setup
+        auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("./logs/calc.txt", true);
+        const char* fll_env = std::getenv("FILE_LOG_LEVEL");
+        spdlog::level::level_enum fll = (fll_env) ? spdlog::level::from_str(fll_env) : spdlog::level::info;
+        file_sink->set_level(fll);
+        auto file_logger = std::make_shared<spdlog::logger>("file", file_sink);
+        file_logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%l] %v");
+        spdlog::register_logger(file_logger);
+        // Set the default logger to the console logger
+        auto logger = std::make_shared<spdlog::logger>("main", spdlog::sinks_init_list{console_sink, file_sink});
+        logger->set_level(spdlog::level::trace);
+        logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%l] %v");
+        spdlog::set_default_logger(logger);
+        spdlog::cfg::load_env_levels("CALCULATOR_LOG_LEVEL");
     }
 }
 
 int main(int argc, char* argv[]) {
+    configure_logger();
+    spdlog::info("Calculator application started. Version: {}", APP_VERSION_STRING);
     cxxopts::Options options("Calculator", "A simple calculator application");
     options.add_options()
         ("h,help", "Show help")

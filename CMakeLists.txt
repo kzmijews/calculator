@@ -42,6 +42,10 @@ else()
 endif()
 
 # - APP SETTINGS
+# -- output directories
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # -- version information
 set(APP_VERSION_MAJOR $ENV{APP_VERSION_MAJOR})
 if(NOT APP_VERSION_MAJOR)
@@ -61,39 +65,7 @@ configure_file(
   ${CMAKE_SOURCE_DIR}/include/core/version.hpp.in
   ${CMAKE_SOURCE_DIR}/include/core/version.hpp
 )
-# -- output directories
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-# -- header settings
-# --- set CXXOPS include directory
-if(NOT DEFINED ENV{CXXOPTS_H_DIR})
-  message(FATAL_ERROR "CXXOPTS_H_DIR environment variable is not set. Please set it to the CXXOPS header file directory.")
-else()
-  set(CXXOPTS_H_DIR "$ENV{CXXOPTS_H_DIR}")
-  message(STATUS "- CXXOPTS include directory: ${CXXOPTS_H_DIR}")
-endif()
-# -- include directories
-include_directories(
-  ${CMAKE_SOURCE_DIR}/include/core
-  ${CMAKE_SOURCE_DIR}/include/ui
-  ${CXXOPTS_H_DIR}
-)
-# -- source files
-file(
-  GLOB SOURCES
-  "src/*.cpp"
-  "src/core/*.cpp"
-  "src/ui/*.cpp"
-)
-# -- UI files
-set(
-  UIS
-  "src/ui/calculator.ui"
-)
-# -- executable target
-add_executable(calculator ${SOURCES})
-# - external dependency settings
+# -- external dependency settings
 # -- Qt6 settings
 if(NOT DEFINED CMAKE_PREFIX_PATH AND DEFINED ENV{Qt6_DIR})
   set(CMAKE_PREFIX_PATH "$ENV{Qt6_DIR}")
@@ -109,6 +81,47 @@ else()
   set(SPDLOG_DIR "$ENV{SPDLOG_DIR}")
   message(STATUS "- SPDLOG_DIR: ${SPDLOG_DIR}")
 endif()
+# -- SPDLOG include directory
+if(NOT DEFINED ENV{SPDLOG_H_DIR})
+  if(EXISTS "${SPDLOG_DIR}/include/spdlog")
+    set(SPDLOG_H_DIR "${SPDLOG_DIR}/include/spdlog")
+  elseif(EXISTS "${SPDLOG_DIR}/include")
+    set(SPDLOG_H_DIR "${SPDLOG_DIR}/include")
+  else()
+    message(FATAL_ERROR "SPDLOG include directory not found. Please check the SPDLOG_DIR environment variable.")
+  endif()
+else()
+  set(SPDLOG_H_DIR "$ENV{SPDLOG_H_DIR}")
+endif()
+message(STATUS "- SPDLOG include directory: ${SPDLOG_H_DIR}")
+# --- set CXXOPS include directory
+if(NOT DEFINED ENV{CXXOPTS_H_DIR})
+  message(FATAL_ERROR "CXXOPTS_H_DIR environment variable is not set. Please set it to the CXXOPS header file directory.")
+else()
+  set(CXXOPTS_H_DIR "$ENV{CXXOPTS_H_DIR}")
+  message(STATUS "- CXXOPTS include directory: ${CXXOPTS_H_DIR}")
+endif()
+# -- include directories
+include_directories(
+  ${CMAKE_SOURCE_DIR}/include/core
+  ${CMAKE_SOURCE_DIR}/include/ui
+  ${CXXOPTS_H_DIR}
+  ${SPDLOG_H_DIR}
+)
+# -- source files
+file(
+  GLOB SOURCES
+  "src/*.cpp"
+  "src/core/*.cpp"
+  "src/ui/*.cpp"
+)
+# -- UI files
+set(
+  UIS
+  "src/ui/calculator.ui"
+)
+# -- executable target
+add_executable(calculator ${SOURCES})
 # - link libraries
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 target_link_libraries(

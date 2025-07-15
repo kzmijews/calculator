@@ -176,7 +176,8 @@ dependencies are located. For example:
 ```bash
 export Qt6_DIR="/opt/Qt/6.9.1/gcc_64/lib/cmake/Qt6"
 export SPDLOG_DIR="/opt/spdlog/lib"
-export CXXOPTS_H_DIR="/opt/cxxops/header"
+export SPDLOG_H_DIR="/opt/spdlog/include"
+export CXXOPTS_H_DIR="/opt/cxxops/include"
 ```
 
 ## Visual Studio Code

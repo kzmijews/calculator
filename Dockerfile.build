@@ -115,6 +115,8 @@ RUN echo "Step 5: Download and install spdlog ${SPDLOG_VERSION}"
 RUN wget https://github.com/gabime/spdlog/archive/refs/tags/v${SPDLOG_VERSION}.tar.gz -O spdlog.tar.gz && \
     tar -xzf spdlog.tar.gz && \
     cd spdlog-${SPDLOG_VERSION} && \
+    mkdir -p /opt/calculator/include/spdlog && \
+    cp -r ./include/spdlog /opt/calculator/include/ && \
     mkdir build && cd build && \
     cmake .. -DCMAKE_BUILD_TYPE=Release && cmake --build . && \
     mkdir -p /opt/calculator/lib && \
@@ -149,6 +151,7 @@ COPY . /opt/calculator
 ENV PATH="/opt/calculator/cmake_install/bin:${PATH}"
 ENV Qt6_DIR="/opt/Qt/${QT_VERSION}/gcc_64/lib/cmake/Qt6"
 ENV SPDLOG_DIR="/opt/calculator/lib"
+ENV SPDLOG_H_DIR="/opt/calculator/include"
 ENV CXXOPTS_H_DIR="/opt/calculator/include/cxxopts"
 # Step 3: generate Makefiles
 RUN echo "Step 6: CMake configure" && \
