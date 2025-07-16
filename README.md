@@ -160,6 +160,25 @@ Enter expression (or q to quit):
 Exiting calculator.
 ```
 
+# Logging
+Two logging destinations are available: `console` and `file`. By default, console
+logging is set to the `warn` level, and file logging is set to the `trace` level.
+To change the logging level for both loggers, set the `CALC_LOG_LEVEL` environment
+variable:
+```bash
+export CALC_LOG_LEVEL="main=warn"
+```
+To change the logging level for the console logger only:
+```bash
+export CALC_CONSOLE_LOG_LEVEL="warn"
+```
+To change the logging level for the file logger only:
+```bash
+export CALC_FILE_LOG_LEVEL="warn"
+```
+Supported logging levels (from most to least verbose):
+`trace` > `debug` > `info` > `warn` > `err` > `critical` > `off`
+
 # Development
 If you prefer to set up the development environment directly on your host machine for greater
 control during development, follow the tips below.

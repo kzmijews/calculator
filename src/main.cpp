@@ -121,7 +121,7 @@ namespace {
     void configure_logger() {
         // Console logger setup
         auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-        const char* cll_env = std::getenv("CONSOLE_LOG_LEVEL");
+        const char* cll_env = std::getenv("CALC_CONSOLE_LOG_LEVEL");
         spdlog::level::level_enum cll = (cll_env) ? spdlog::level::from_str(cll_env) : spdlog::level::warn;
         console_sink->set_level(cll);
         auto console_logger = std::make_shared<spdlog::logger>("console", console_sink);
@@ -129,7 +129,7 @@ namespace {
         spdlog::register_logger(console_logger);
         // File logger setup
         auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("./logs/calc.txt", true);
-        const char* fll_env = std::getenv("FILE_LOG_LEVEL");
+        const char* fll_env = std::getenv("CALC_FILE_LOG_LEVEL");
         spdlog::level::level_enum fll = (fll_env) ? spdlog::level::from_str(fll_env) : spdlog::level::info;
         file_sink->set_level(fll);
         auto file_logger = std::make_shared<spdlog::logger>("file", file_sink);
@@ -140,7 +140,7 @@ namespace {
         logger->set_level(spdlog::level::trace);
         logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%l] %v");
         spdlog::set_default_logger(logger);
-        spdlog::cfg::load_env_levels("CALCULATOR_LOG_LEVEL");
+        spdlog::cfg::load_env_levels("CALC_LOG_LEVEL");
     }
 }
 
