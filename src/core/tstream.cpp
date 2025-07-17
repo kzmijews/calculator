@@ -22,6 +22,8 @@
 // app headers
 #include "token.hpp"
 #include "tstream.hpp"
+// external library headers
+#include "spdlog/spdlog.h"
 
 namespace kz::calc::core {
     Token TokenStream::pop() {
@@ -53,7 +55,10 @@ namespace kz::calc::core {
 
     void TokenStream::push(Token token) {
         if (full) {
-            std::cerr << "TokenStream buffer is full, cannot push token." << std::endl;
+            spdlog::error(
+                "TokenStream buffer is full, cannot push token: {}",
+                static_cast<char>(etov(token.getType()))
+            );
         } else {
             full = true;
             buffer = token;

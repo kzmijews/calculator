@@ -56,18 +56,18 @@ namespace {
             } catch(const kz::calc::core::EndOfExpression& e) {
                 continue;
             } catch(const kz::calc::core::InvalidExpression& e) {
-                std::cerr << "Invalid expression: " << e.what() << std::endl;
+                spdlog::error("[imod] Invalid expression: {}", e.what());
                 calculator.reset();
                 continue;
             } catch(const kz::calc::core::EndOfExecution& e) {
-                std::cout << "Exiting calculator." << std::endl;
+                spdlog::info("[imod] Exiting calculator due to: {}", e.what());
                 break;
             } catch(const std::runtime_error& e) {
-                std::cerr << "Runtime error: " << e.what() << std::endl;
+                spdlog::error("[imod] Runtime error: {}", e.what());
                 calculator.reset();
                 continue;
             } catch(const std::exception& e) {
-                std::cerr << "An error occurred: " << e.what() << std::endl;
+                spdlog::error("[imod] An unexpected error occurred: {}", e.what());
                 calculator.reset();
                 continue;
             }
@@ -87,14 +87,15 @@ namespace {
         try {
             calculator << expression;
             double result = calculator.expression();
-            std::cout << "Result: " << result << std::endl;
+            expression.pop_back(); // Remove the trailing semicolon
+            spdlog::info("[emode] Result: {} = {}", expression, result);
         } catch (const kz::calc::core::InvalidExpression& e) {
-            std::cerr << "Invalid expression: " << e.what() << std::endl;
+            spdlog::error("[emode] Invalid expression encountered: {}", e.what());
             return 1;
         } catch (const kz::calc::core::EndOfExecution& e) {
-            std::cout << "Exiting calculator." << std::endl;
+            spdlog::info("[emode] Exiting calculator: {}", e.what());
         } catch (const std::exception& e) {
-            std::cerr << "An error occurred: " << e.what() << std::endl;
+            spdlog::error("[emode] An error occurred: {}", e.what());
             return 1;
         }
         return 0;
@@ -165,13 +166,14 @@ int main(int argc, char* argv[]) {
         return 0;
     }
     if (args.count("interactive")) {
-        std::cout << "Launching calculator in interactive mode." << std::endl;
+        spdlog::info("[imode] Launching calculator in interactive mode.");
         return interactiveMode();
     } else if (args.count("expression")) {
         std::string expression = args["expression"].as<std::string>();
+        spdlog::trace("Executing expression: {}", expression);
         return executeMode(expression);
     } else if (args.count("user-interface")) {
-        std::cout << "Launching calculator with user interface (GUI)." << std::endl;
+        spdlog::info("[umode] Launching calculator with user interface (GUI).");
         return uiMode(argc, argv);
     }
     std::cout << "No expression provided. Use -h or --help for usage information." << std::endl;

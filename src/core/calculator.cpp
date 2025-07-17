@@ -25,19 +25,25 @@
 #include "exceptions.hpp"
 #include "calculator.hpp"
 #include "tstream.hpp"
+// external library headers
+#include "spdlog/spdlog.h"
 
 namespace kz::calc::core {
     double Calculator::expression() {
+        spdlog::trace("Starting expression evaluation.");
         double lvalue = term(); // Start with the first term
         while (true) {
             Token token = ts.pop();
             TokenType token_type = token.getType();
             if (token_type == TokenType::PLUS) {
+                spdlog::trace("e: +");
                 lvalue += term();
             } else if (token_type == TokenType::MINUS) {
+                spdlog::trace("e: -");
                 lvalue -= term();
             } else if (token_type == TokenType::END) {
                 // End of expression, return the result
+                spdlog::trace("End of expression reached.");
                 break;
             } else if (token_type == TokenType::UNKNOWN) {
                 // Handle unknown token
@@ -51,6 +57,7 @@ namespace kz::calc::core {
                 break;
             }
         }
+        spdlog::trace("Expression evaluation completed with result: {}", lvalue);
         return lvalue;
     }
 
@@ -60,8 +67,10 @@ namespace kz::calc::core {
             Token token = ts.pop();
             TokenType token_kind = token.getType();
             if (token_kind == TokenType::MULTIPLY) {
+                spdlog::trace("t: *");
                 lvalue *= primary();
             } else if (token_kind == TokenType::DIVIDE) {
+                spdlog::trace("t: /");
                 double divisor = primary();
                 if (divisor == 0) {
                     throw InvalidExpression("Division by zero is not allowed.");
@@ -81,8 +90,10 @@ namespace kz::calc::core {
         Token token = ts.pop();
         TokenType token_type = token.getType();
         if (token_type == TokenType::NUMBER) {
+            spdlog::trace("p: {}", token.getValue());
             return token.getValue();
         } else if (token_type == TokenType::LEFT_PAREN) {
+            spdlog::trace("p: (");
             double lvalue = expression();
             // Expecting a right parenthesis
             token = ts.pop();
@@ -90,8 +101,10 @@ namespace kz::calc::core {
             if (token_type != TokenType::RIGHT_PAREN) {
                 throw InvalidExpression("Expected right parenthesis: ')'");
             }
+            spdlog::trace("p: )");
             return lvalue;
         } else if (token_type == TokenType::MINUS) {
+            spdlog::trace("p: -");
             return -primary();
         } else if (token_type == TokenType::QUIT) {
             throw EndOfExecution();

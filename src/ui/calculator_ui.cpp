@@ -23,6 +23,8 @@
 #include "exceptions.hpp"
 #include "calculator.hpp"
 #include "calculator_ui.hpp"
+// external library headers
+#include "spdlog/spdlog.h"
 
 namespace kz::calc::ui {
     void CalculatorUi::keyboardButtonClicked(QTextBrowser* resultBrowser, const QString& text) {
@@ -30,18 +32,20 @@ namespace kz::calc::ui {
             resultBrowser->setText("");
             calculator.reset();
         } else if (text == "=") {
-            calculator << resultBrowser->toPlainText().toStdString() << ";";
+            std::string expression = resultBrowser->toPlainText().toStdString();
+            calculator << expression << ";";
             try {
                 double result = calculator.expression();
                 resultBrowser->setText("");
                 resultBrowser->insertPlainText(QString::number(result));
+                spdlog::info("[umode] Result: {} = {}", expression, result);
             } catch (const kz::calc::core::InvalidExpression& e) {
                 resultBrowser->setText("ERR: invalid/unsupported");
-                std::cout << "Error: " << e.what() << std::endl;
+                spdlog::error("[umode] Invalid expression encountered: {}", e.what());
                 calculator.reset();
             } catch (const std::runtime_error& e) {
                 resultBrowser->setText("ERR: unexpected error");
-                std::cout << "Error: " << e.what() << std::endl;
+                spdlog::error("[umode] Runtime error: {}", e.what());
                 calculator.reset();
             }
         } else if (text == "x") {
