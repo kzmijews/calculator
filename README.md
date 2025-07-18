@@ -196,6 +196,8 @@ dependencies are located. For example:
 export Qt6_DIR="/opt/Qt/6.9.1/gcc_64/lib/cmake/Qt6"
 export SPDLOG_DIR="/opt/spdlog/lib"
 export SPDLOG_H_DIR="/opt/spdlog/include"
+export GTEST_DIR="/opt/gtest/lib"
+export GTEST_H_DIR="/opt/gtest/include"
 export CXXOPTS_H_DIR="/opt/cxxops/include"
 ```
 

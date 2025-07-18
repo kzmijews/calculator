@@ -21,6 +21,7 @@ ARG QT_VERSION="6.9.1"
 ARG QT_INSTALLER_VERSION="4.9"
 ARG SPDLOG_VERSION="1.15.2"
 ARG CXXOPS_VERSION="3.3.1"
+ARG GTEST_VERSION="1.16.0"
 ARG PROJECT_BUILD_TYPE="Debug"
 ARG APP_VERSION_MAJOR="0"
 ARG APP_VERSION_MINOR="0"
@@ -122,13 +123,33 @@ RUN wget https://github.com/gabime/spdlog/archive/refs/tags/v${SPDLOG_VERSION}.t
     mkdir -p /opt/calculator/lib && \
     cp libspdlog.a /opt/calculator/lib/libspdlog.a
 
-FROM install-spdlog-stage AS install-cxxopts-stage
+FROM install-spdlog-stage AS install-gtest-stage
+# Redefined build args to make them visible at this stage
+ARG GTEST_VERSION
+# Step 1: set working directory
+WORKDIR /opt/calculator
+# Step 2: download and install gtest
+RUN echo "Step 6: Download and install gtest ${GTEST_VERSION}"
+RUN wget https://github.com/google/googletest/releases/download/v${GTEST_VERSION}/googletest-${GTEST_VERSION}.tar.gz -O gtest.tar.gz && \
+    tar -xzf gtest.tar.gz && \
+    cd googletest-${GTEST_VERSION} && \
+    mkdir -p /opt/calculator/include/gtest && \
+    cp ./googletest/include/gtest/gtest.h /opt/calculator/include/gtest/ && \
+    cp ./googlemock/include/gmock/gmock.h /opt/calculator/include/gtest/ && \
+    mkdir build && cd build && \
+    cmake .. -DCMAKE_BUILD_TYPE=Release && cmake --build . && \
+    mkdir -p /opt/calculator/lib && \
+    cd /opt/calculator/googletest-${GTEST_VERSION}/build/lib && \
+    cp libgtest.a /opt/calculator/lib/libgtest.a && \
+    cp libgmock.a /opt/calculator/lib/libgmock.a
+
+FROM install-gtest-stage AS install-cxxopts-stage
 # Redefined build args to make them visible at this stage
 ARG CXXOPS_VERSION
 # Step 1: set working directory
 WORKDIR /opt/calculator
 # Step 2: download and install cxxopts
-RUN echo "Step 6: Download and install cxxopts ${CXXOPS_VERSION}"
+RUN echo "Step 7: Download and install cxxopts ${CXXOPS_VERSION}"
 RUN wget https://github.com/jarro2783/cxxopts/archive/refs/tags/v${CXXOPS_VERSION}.tar.gz -O cxxopts.tar.gz && \
     tar -xzf cxxopts.tar.gz && \
     mkdir -p /opt/calculator/include/cxxopts && \
@@ -152,14 +173,16 @@ ENV PATH="/opt/calculator/cmake_install/bin:${PATH}"
 ENV Qt6_DIR="/opt/Qt/${QT_VERSION}/gcc_64/lib/cmake/Qt6"
 ENV SPDLOG_DIR="/opt/calculator/lib"
 ENV SPDLOG_H_DIR="/opt/calculator/include"
+ENV GTEST_DIR="/opt/calculator/lib"
+ENV GTEST_H_DIR="/opt/calculator/include/gtest"
 ENV CXXOPTS_H_DIR="/opt/calculator/include/cxxopts"
 # Step 3: generate Makefiles
-RUN echo "Step 6: CMake configure" && \
+RUN echo "Step 8: CMake configure" && \
     cmake -S . -B ./build/${PROJECT_BUILD_TYPE} \
         -DCMAKE_BUILD_TYPE="${PROJECT_BUILD_TYPE}" \
         -DARTIFACTS_DIRECTORY="${PWD}/calculator/"
 # Step 4: build the project
-RUN echo "Step 7: CMake build" && \
+RUN echo "Step 9: CMake build" && \
     cmake --build ./build/${PROJECT_BUILD_TYPE} --config "${PROJECT_BUILD_TYPE}"
 
 FROM build-calculator-stage AS prepare-artifacts-stage
@@ -169,14 +192,14 @@ ENV PATH="/opt/Qt/${QT_VERSION}/gcc_64/bin:${PATH}"
 # Step 1: set working directory
 WORKDIR /opt/calculator
 # Step 2: make linuxdeploy executable and prepare artifacts directory
-RUN echo "Step 8: Prepare artifacts directory" && \
+RUN echo "Step 10: Prepare artifacts directory" && \
     mkdir -p calculator/usr/bin/ && \
     cp ./build/${PROJECT_BUILD_TYPE}/bin/calculator calculator/usr/bin/ && \
     cp ./calculator.desktop calculator/ && \
     cp ./imgs/icon.svg calculator/calculator.svg
-RUN echo "Step 9: Prepare linuxdeploy" && \
+RUN echo "Step 11: Prepare linuxdeploy" && \
     ./linuxdeployqt.AppImage --appimage-extract
-RUN echo "Step 10: Create deployment" && \
+RUN echo "Step 12: Create deployment" && \
     ./squashfs-root/AppRun calculator/calculator.desktop \
         -bundle-non-qt-libs
 
@@ -187,10 +210,10 @@ ARG APP_VERSION_PATCH
 # Step 1: set working directory
 WORKDIR /opt/calculator
 # Step 2: prepare deb pkg from binaries
-RUN echo "Step 11: CPack create deb package" && \
+RUN echo "Step 13: CPack create deb package" && \
     cpack -G DEB -B ./build/deb --config ./build/${PROJECT_BUILD_TYPE}/CPackConfig.cmake
 # Step 3: create archive with binaries
-RUN echo "Step 12: Create archive with binaries" && \
+RUN echo "Step 14: Create archive with binaries" && \
     tar -czvf \
         calculator_${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}.${APP_VERSION_PATCH}.tar.gz \
         calculator/
