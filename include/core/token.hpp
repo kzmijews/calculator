@@ -70,39 +70,39 @@ namespace kz::calc::core {
          * Returns the value of the token.
          * @return The numeric value of the token, or 0.0 if the token is not a number.
          */
-        double getValue() const;
+        double get_value() const;
         /**
          * Checks if the token is a number.
          * @return True if the token is of type NUMBER, false otherwise.
          */
-        bool isNumber() const;
+        bool is_number() const;
         /**
          * Checks if the token is an operator.
          * @return True if the token is an operator (PLUS, MINUS, MULTIPLY, DIVIDE), false otherwise.
          *         This method is useful for determining if the token can be used in an arithmetic operation
          */
-        bool isOperator() const;
+        bool is_operator() const;
         /**
          * Checks if the token is a parenthesis.
          * @return True if the token is a left or right parenthesis, false otherwise.
          */
-        bool isParenthesis() const;
+        bool is_parenthesis() const;
         /**
          * Checks if the token is an end of execution token.
          * @return True if the token is of type QUIT, false otherwise.
          */
-        bool isQuit() const;
+        bool is_quit() const;
         /**
          * Checks if the token is an end of expression token.
          * @return True if the token is of type END, false otherwise.
          *         This method is useful for determining if the token marks the end of an expression.
          */
-        bool isEnd() const;
+        bool is_end() const;
         /**
          * Returns the type of the token.
          * @return The TokenType of the token, which indicates its category (e.g., NUMBER, PLUS, MINUS, etc.).
          */
-        TokenType getType() const;
+        TokenType get_type() const;
         /**
          * Converts the token to a string representation.
          * @return A string representation of the token, useful for debugging or logging.

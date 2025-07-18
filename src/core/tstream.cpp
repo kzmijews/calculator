@@ -32,15 +32,15 @@ namespace kz::calc::core {
             return buffer;
         }
         char sign = 0;
-        exprStream >> sign;
+        expr_stream >> sign;
         switch (sign) {
             case '0': case '1': case '2': case '3': case '4':
             case '5': case '6': case '7': case '8': case '9':
             case '.': {
-                exprStream.putback(sign);
+                expr_stream.putback(sign);
                 double value;
                 // it will read each digit until it reaches a non-digit character and return whole number
-                exprStream >> value;
+                expr_stream >> value;
                 return Token(TokenType::NUMBER, value);
             }
             case '+': case '-':
@@ -57,7 +57,7 @@ namespace kz::calc::core {
         if (full) {
             spdlog::error(
                 "TokenStream buffer is full, cannot push token: {}",
-                static_cast<char>(etov(token.getType()))
+                static_cast<char>(etov(token.get_type()))
             );
         } else {
             full = true;
@@ -66,8 +66,8 @@ namespace kz::calc::core {
     }
 
     Token TokenStream::peek() {
-        if (exprStream.peek()) {
-            return Token(exprStream.peek());
+        if (expr_stream.peek()) {
+            return Token(expr_stream.peek());
         }
         return Token(TokenType::UNKNOWN);
     }
@@ -75,10 +75,10 @@ namespace kz::calc::core {
     void TokenStream::clear() {
         full = false;
         buffer = Token();
-        exprStream.clear();
+        expr_stream.clear();
         // Clear the stringstream
-        exprStream.str("");
+        expr_stream.str("");
         // Reset the stream position to the beginning
-        exprStream.seekg(0);
+        expr_stream.seekg(0);
     }
 }

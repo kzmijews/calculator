@@ -27,89 +27,89 @@
 #include "spdlog/spdlog.h"
 
 namespace kz::calc::ui {
-    void CalculatorUi::keyboardButtonClicked(QTextBrowser* resultBrowser, const QString& text) {
+    void CalculatorUi::keyboard_button_clicked(QTextBrowser* result_browser, const QString& text) {
         if (text == "AC") {
-            resultBrowser->setText("");
+            result_browser->setText("");
             calculator.reset();
         } else if (text == "=") {
-            std::string expression = resultBrowser->toPlainText().toStdString();
+            std::string expression = result_browser->toPlainText().toStdString();
             calculator << expression << ";";
             try {
                 double result = calculator.expression();
-                resultBrowser->setText("");
-                resultBrowser->insertPlainText(QString::number(result));
+                result_browser->setText("");
+                result_browser->insertPlainText(QString::number(result));
                 spdlog::info("[umode] Result: {} = {}", expression, result);
             } catch (const kz::calc::core::InvalidExpression& e) {
-                resultBrowser->setText("ERR: invalid/unsupported");
+                result_browser->setText("ERR: invalid/unsupported");
                 spdlog::error("[umode] Invalid expression encountered: {}", e.what());
                 calculator.reset();
             } catch (const std::runtime_error& e) {
-                resultBrowser->setText("ERR: unexpected error");
+                result_browser->setText("ERR: unexpected error");
                 spdlog::error("[umode] Runtime error: {}", e.what());
                 calculator.reset();
             }
         } else if (text == "x") {
-            resultBrowser->insertPlainText("*");
+            result_browser->insertPlainText("*");
         } else if (text == "pi") {
-            resultBrowser->insertPlainText(QString::number(M_PI));
+            result_browser->insertPlainText(QString::number(M_PI));
         } else if (text == "sqrt") {
-            resultBrowser->insertPlainText("sqrt(");
+            result_browser->insertPlainText("sqrt(");
         } else if (text == "<<") {
-            QString currentText = resultBrowser->toPlainText();
-            if (!currentText.isEmpty()) {
+            QString current_text = result_browser->toPlainText();
+            if (!current_text.isEmpty()) {
                 // Remove the last character
-                currentText.chop(1);
-                resultBrowser->setText("");
-                resultBrowser->insertPlainText(currentText);
+                current_text.chop(1);
+                result_browser->setText("");
+                result_browser->insertPlainText(current_text);
             }
         } else if (text == "sep") {
-            resultBrowser->insertPlainText(".");
+            result_browser->insertPlainText(".");
         } else {
             // Prevent starting with an operator
-            if (resultBrowser->toPlainText().isEmpty() && (text == "+" || text == "x" || text == "/" || text == "^")) {
+            if (result_browser->toPlainText().isEmpty() && (text == "+" || text == "x" || text == "/" || text == "^")) {
                 return;
             }
-            resultBrowser->insertPlainText(text);
+            result_browser->insertPlainText(text);
         }
     }
 
-    void CalculatorUi::connectButtons() {
-        QObject::connect(zeroButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, zeroButton->text()); });
-        QObject::connect(oneButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, oneButton->text()); });
-        QObject::connect(twoButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, twoButton->text()); });
-        QObject::connect(threeButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, threeButton->text()); });
-        QObject::connect(fourButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, fourButton->text()); });
-        QObject::connect(fiveButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, fiveButton->text()); });
-        QObject::connect(sixButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, sixButton->text()); });
-        QObject::connect(sevenButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, sevenButton->text()); });
-        QObject::connect(eightButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, eightButton->text()); });
-        QObject::connect(nineButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, nineButton->text()); });
-        QObject::connect(eqButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, eqButton->text()); });
-        QObject::connect(addButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, addButton->text()); });
-        QObject::connect(minusButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, minusButton->text()); });
-        QObject::connect(divButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, divButton->text()); });
-        QObject::connect(mulButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, mulButton->text()); });
-        QObject::connect(sepButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, sepButton->text()); });
-        QObject::connect(acButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, acButton->text()); });
-        QObject::connect(rmButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, rmButton->text()); });
-        QObject::connect(leftParenButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, leftParenButton->text()); });
-        QObject::connect(rightParenButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, rightParenButton->text()); });
-        QObject::connect(powerButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, powerButton->text()); });
-        QObject::connect(piButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, piButton->text()); });
-        QObject::connect(factorialButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, factorialButton->text()); });
-        QObject::connect(sqrtButton, &QPushButton::clicked, [&]() { keyboardButtonClicked(resultBrowser, sqrtButton->text()); });
+    void CalculatorUi::connect_buttons() {
+        QObject::connect(zeroButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, zeroButton->text()); });
+        QObject::connect(oneButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, oneButton->text()); });
+        QObject::connect(twoButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, twoButton->text()); });
+        QObject::connect(threeButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, threeButton->text()); });
+        QObject::connect(fourButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, fourButton->text()); });
+        QObject::connect(fiveButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, fiveButton->text()); });
+        QObject::connect(sixButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, sixButton->text()); });
+        QObject::connect(sevenButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, sevenButton->text()); });
+        QObject::connect(eightButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, eightButton->text()); });
+        QObject::connect(nineButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, nineButton->text()); });
+        QObject::connect(eqButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, eqButton->text()); });
+        QObject::connect(addButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, addButton->text()); });
+        QObject::connect(minusButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, minusButton->text()); });
+        QObject::connect(divButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, divButton->text()); });
+        QObject::connect(mulButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, mulButton->text()); });
+        QObject::connect(sepButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, sepButton->text()); });
+        QObject::connect(acButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, acButton->text()); });
+        QObject::connect(rmButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, rmButton->text()); });
+        QObject::connect(leftParenButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, leftParenButton->text()); });
+        QObject::connect(rightParenButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, rightParenButton->text()); });
+        QObject::connect(powerButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, powerButton->text()); });
+        QObject::connect(piButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, piButton->text()); });
+        QObject::connect(factorialButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, factorialButton->text()); });
+        QObject::connect(sqrtButton, &QPushButton::clicked, [&]() { keyboard_button_clicked(resultBrowser, sqrtButton->text()); });
     }
 
     CalculatorUi::CalculatorUi(kz::calc::core::Calculator& calculator) : calculator(calculator) {
-        mainWindow = std::make_unique<QMainWindow>();
+        main_window = std::make_unique<QMainWindow>();
     }
 
-    QMainWindow* CalculatorUi::getMainWindow() const {
-        return mainWindow.get();
+    QMainWindow* CalculatorUi::get_main_window() const {
+        return main_window.get();
     }
 
     void CalculatorUi::setup() {
-        setupUi(mainWindow.get());
-        connectButtons();
+        setupUi(main_window.get());
+        connect_buttons();
     }
 }

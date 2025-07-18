@@ -40,7 +40,7 @@ namespace {
      * It handles various exceptions and provides feedback on errors.
      * @return 0 on success, non-zero on error.
      */
-    int interactiveMode() {
+    int interactive_mode() {
         kz::calc::core::Calculator calculator;
         double value = 0.0;
         std::cout << "Enter expression (or q to quit): " << std::endl;
@@ -82,7 +82,7 @@ namespace {
      * @param expression The expression to evaluate.
      * @return 0 on success, non-zero on error.
      */
-    int executeMode(std::string expression) {
+    int execute_mode(std::string expression) {
         kz::calc::core::Calculator calculator;
         try {
             calculator << expression;
@@ -110,12 +110,12 @@ namespace {
      * @return The exit code of the application.
      *         Returns 0 on successful execution, or a non-zero value on error.
      */
-    int uiMode(int argc, char* argv[]) {
+    int ui_mode(int argc, char* argv[]) {
         QApplication app(argc, argv);
         kz::calc::core::Calculator calculator;
         kz::calc::ui::CalculatorUi calculator_ui(calculator);
         calculator_ui.setup();
-        calculator_ui.getMainWindow()->show();
+        calculator_ui.get_main_window()->show();
         return app.exec();
     }
 
@@ -167,14 +167,14 @@ int main(int argc, char* argv[]) {
     }
     if (args.count("interactive")) {
         spdlog::info("[imode] Launching calculator in interactive mode.");
-        return interactiveMode();
+        return interactive_mode();
     } else if (args.count("expression")) {
         std::string expression = args["expression"].as<std::string>();
         spdlog::trace("Executing expression: {}", expression);
-        return executeMode(expression);
+        return execute_mode(expression);
     } else if (args.count("user-interface")) {
         spdlog::info("[umode] Launching calculator with user interface (GUI).");
-        return uiMode(argc, argv);
+        return ui_mode(argc, argv);
     }
     std::cout << "No expression provided. Use -h or --help for usage information." << std::endl;
     return 1;

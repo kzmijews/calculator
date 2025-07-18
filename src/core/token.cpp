@@ -24,7 +24,7 @@
 
 namespace kz::calc::core {
     Token::Token(char sign): type(static_cast<TokenType>(sign)), value(0.0) {
-        if (isNumber()) {
+        if (is_number()) {
             value = static_cast<double>(sign - '0');
         }
     }
@@ -32,36 +32,36 @@ namespace kz::calc::core {
     Token::Token(TokenType type, double value): type(type), value(static_cast<double>(value)) {
     }
 
-    double Token::getValue() const {
+    double Token::get_value() const {
         return value;
     }
 
-    bool Token::isNumber() const {
+    bool Token::is_number() const {
         return type == TokenType::NUMBER;
     }
 
-    bool Token::isOperator() const {
-        bool isOperator = false;
-        isOperator |= type == TokenType::PLUS;
-        isOperator |= type == TokenType::MINUS;
-        isOperator |= type == TokenType::MULTIPLY;
-        isOperator |= type == TokenType::DIVIDE;
-        return isOperator;
+    bool Token::is_operator() const {
+        bool is_operator = false;
+        is_operator |= type == TokenType::PLUS;
+        is_operator |= type == TokenType::MINUS;
+        is_operator |= type == TokenType::MULTIPLY;
+        is_operator |= type == TokenType::DIVIDE;
+        return is_operator;
     }
 
-    bool Token::isParenthesis() const {
+    bool Token::is_parenthesis() const {
         return type == TokenType::LEFT_PAREN || type == TokenType::RIGHT_PAREN;
     }
 
-    bool Token::isQuit() const {
+    bool Token::is_quit() const {
         return type == TokenType::QUIT;
     }
 
-    bool Token::isEnd() const {
+    bool Token::is_end() const {
         return type == TokenType::END;
     }
 
-    TokenType Token::getType() const {
+    TokenType Token::get_type() const {
         return type;
     }
 }

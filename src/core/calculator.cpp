@@ -34,7 +34,7 @@ namespace kz::calc::core {
         double lvalue = term(); // Start with the first term
         while (true) {
             Token token = ts.pop();
-            TokenType token_type = token.getType();
+            TokenType token_type = token.get_type();
             if (token_type == TokenType::PLUS) {
                 spdlog::trace("e: +");
                 lvalue += term();
@@ -65,11 +65,11 @@ namespace kz::calc::core {
         double lvalue = primary();
         while(true) {
             Token token = ts.pop();
-            TokenType token_kind = token.getType();
-            if (token_kind == TokenType::MULTIPLY) {
+            TokenType token_type = token.get_type();
+            if (token_type == TokenType::MULTIPLY) {
                 spdlog::trace("t: *");
                 lvalue *= primary();
-            } else if (token_kind == TokenType::DIVIDE) {
+            } else if (token_type == TokenType::DIVIDE) {
                 spdlog::trace("t: /");
                 double divisor = primary();
                 if (divisor == 0) {
@@ -88,16 +88,16 @@ namespace kz::calc::core {
 
     double Calculator::primary() {
         Token token = ts.pop();
-        TokenType token_type = token.getType();
+        TokenType token_type = token.get_type();
         if (token_type == TokenType::NUMBER) {
-            spdlog::trace("p: {}", token.getValue());
-            return token.getValue();
+            spdlog::trace("p: {}", token.get_value());
+            return token.get_value();
         } else if (token_type == TokenType::LEFT_PAREN) {
             spdlog::trace("p: (");
             double lvalue = expression();
             // Expecting a right parenthesis
             token = ts.pop();
-            token_type = token.getType();
+            token_type = token.get_type();
             if (token_type != TokenType::RIGHT_PAREN) {
                 throw InvalidExpression("Expected right parenthesis: ')'");
             }
@@ -112,7 +112,7 @@ namespace kz::calc::core {
             throw EndOfExecution();
         }
         throw InvalidExpression(
-            "Unexpected token: '" + std::to_string(etov(token.getType())) + "'"
+            "Unexpected token: '" + std::to_string(etov(token_type)) + "'"
         );
     }
 } // namespace kz::calc::core

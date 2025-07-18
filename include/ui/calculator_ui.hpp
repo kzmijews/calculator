@@ -29,15 +29,15 @@ namespace kz::calc::ui {
     class CalculatorUi: protected Ui::CalculatorMainWindow {
     private:
         kz::calc::core::Calculator &calculator;
-        std::unique_ptr<QMainWindow> mainWindow;
-        void connectButtons();
+        std::unique_ptr<QMainWindow> main_window;
+        void connect_buttons();
         /**
          * Handles keyboard button clicks in the calculator UI.
          * This function processes the text of the button clicked and updates the result browser accordingly.
          * It supports operations like addition, subtraction, multiplication, division, and special functions
          * like square root and factorial. It also handles clearing the input, evaluating the expression, and
          * managing errors.
-         * @param resultBrowser The QTextBrowser where the result is displayed.
+         * @param result_browser The QTextBrowser where the result is displayed.
          * @param text The text of the button clicked, which determines the action to perform.
          *              It can be a number, an operator, or a special command like "AC" or "=".
          *              Supported operators include "+", "-", "*", "/", "^", "sqrt", "pi", and
@@ -54,7 +54,7 @@ namespace kz::calc::ui {
          * @note The function uses the calculator's expression evaluation method to compute the result
          * and updates the result browser accordingly.
          */
-        void keyboardButtonClicked(QTextBrowser* resultBrowser, const QString& text);
+        void keyboard_button_clicked(QTextBrowser* result_browser, const QString& text);
     public:
         /**
          * Constructor for the CalculatorUi class.
@@ -76,7 +76,7 @@ namespace kz::calc::ui {
          * Returns the main window of the calculator UI.
          * @return Pointer to the QMainWindow instance representing the main window.
          */
-        QMainWindow* getMainWindow() const;
+        QMainWindow* get_main_window() const;
     };
 } // namespace kz::calc::ui
 

@@ -30,7 +30,7 @@ namespace kz::calc::core {
     class TokenStream {
     private:
         bool full;
-        std::stringstream exprStream;
+        std::stringstream expr_stream;
         Token buffer;
     public:
         TokenStream(): full(false), buffer(Token()) {};
@@ -70,7 +70,7 @@ namespace kz::calc::core {
          */
         template <typename T>
         TokenStream& operator<<(const T& value) {
-            exprStream << value;
+            expr_stream << value;
             return *this;
         }
     };
