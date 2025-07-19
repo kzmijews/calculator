@@ -64,7 +64,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: rel-build-v${{ needs.build.outputs.VERSION }}
+          name: rel-build-${{ github.ref_name }}
           path: artifacts/
       - name: Run tests
         run: |
