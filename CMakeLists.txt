@@ -94,23 +94,6 @@ else()
   set(SPDLOG_H_DIR "$ENV{SPDLOG_H_DIR}")
 endif()
 message(STATUS "- SPDLOG include directory: ${SPDLOG_H_DIR}")
-# -- GTEST settings
-if(NOT DEFINED ENV{GTEST_DIR})
-  message(FATAL_ERROR "GTEST_DIR environment variable is not set. Please set it to the GTEST installation directory.")
-else()
-  set(GTEST_DIR "$ENV{GTEST_DIR}")
-  message(STATUS "- GTEST_DIR: ${GTEST_DIR}")
-endif()
-# -- GTEST include directory
-if(NOT DEFINED ENV{GTEST_H_DIR})
-  if(EXISTS "${GTEST_DIR}/include/gtest")
-    set(GTEST_H_DIR "${GTEST_DIR}/include/gtest")
-  elseif(EXISTS "${GTEST_DIR}/include")
-    set(GTEST_H_DIR "${GTEST_DIR}/include")
-  else()
-    message(FATAL_ERROR "GTEST include directory not found. Please check the GTEST_DIR environment variable.")
-  endif()
-endif()
 # --- set CXXOPS include directory
 if(NOT DEFINED ENV{CXXOPTS_H_DIR})
   message(FATAL_ERROR "CXXOPTS_H_DIR environment variable is not set. Please set it to the CXXOPS header file directory.")
@@ -124,7 +107,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/include/ui
   ${CXXOPTS_H_DIR}
   ${SPDLOG_H_DIR}
-  ${GTEST_H_DIR}
 )
 # -- source files
 file(
@@ -146,8 +128,6 @@ target_link_libraries(
   calculator PRIVATE
   Qt6::Widgets
   ${SPDLOG_DIR}/libspdlog.a
-  ${GTEST_DIR}/libgtest.a
-  ${GTEST_DIR}/libgmock.a
 )
 if(MSVC)
   # -- link windows only libraries
@@ -158,6 +138,11 @@ else()
 endif()
 qt_wrap_ui(UI_HEADERS ${UIS})
 
+# - TESTS SETTINGS
+enable_testing()
+# -- include tests
+add_subdirectory(tests)
+
 # - DISTRIBUTION SETTINGS
 # -- install rules
 if(NOT DEFINED ARTIFACTS_DIRECTORY)
@@ -167,6 +152,8 @@ message(STATUS "ARTIFACTS_DIRECTORY: ${ARTIFACTS_DIRECTORY}")
 install(
   DIRECTORY ${ARTIFACTS_DIRECTORY} DESTINATION opt/calculator/
 )
+# -- exclude test targets from install
+#set_target_properties(test_calculator PROPERTIES EXCLUDE_FROM_ALL TRUE)
 # -- packaging
 set(CPACK_GENERATOR "DEB")
 set(CPACK_PACKAGE_NAME "calculator")
