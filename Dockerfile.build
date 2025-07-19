@@ -173,7 +173,9 @@ WORKDIR /opt/calculator
 # Step 2: make linuxdeploy executable and prepare artifacts directory
 RUN echo "Step 9: Prepare artifacts directory" && \
     mkdir -p calculator/usr/bin/ && \
+    mkdir -p tests/bin/ && \
     cp ./build/${PROJECT_BUILD_TYPE}/bin/calculator calculator/usr/bin/ && \
+    cp ./build/${PROJECT_BUILD_TYPE}/bin/test_calculator tests/bin/ && \
     cp ./calculator.desktop calculator/ && \
     cp ./imgs/icon.svg calculator/calculator.svg
 RUN echo "Step 10: Prepare linuxdeploy" && \
@@ -182,7 +184,7 @@ RUN echo "Step 11: Create deployment" && \
     ./squashfs-root/AppRun calculator/calculator.desktop \
         -bundle-non-qt-libs
 
-FROM prepare-artifacts-stage AS prepare-deb-pkg-stage
+FROM prepare-artifacts-stage AS prepare-pkgs-stage
 ARG APP_VERSION_MAJOR
 ARG APP_VERSION_MINOR
 ARG APP_VERSION_PATCH
@@ -196,10 +198,15 @@ RUN echo "Step 13: Create archive with binaries" && \
     tar -czvf \
         calculator_${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}.${APP_VERSION_PATCH}.tar.gz \
         calculator/
+RUN echo "Step 14: Create archive with tests" && \
+    tar -czvf \
+        test_calculator_${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}.${APP_VERSION_PATCH}.tar.gz \
+        -C "tests/bin" test_calculator
 
 FROM scratch AS build-app-output-stage
-COPY --from=prepare-deb-pkg-stage /opt/calculator/build/deb/calculator*.deb /artifacts/
-COPY --from=prepare-deb-pkg-stage /opt/calculator/calculator*.tar.gz /artifacts/
+COPY --from=prepare-pkgs-stage /opt/calculator/build/deb/calculator*.deb /artifacts/
+COPY --from=prepare-pkgs-stage /opt/calculator/calculator*.tar.gz /artifacts/
+COPY --from=prepare-pkgs-stage /opt/calculator/test_calculator*.tar.gz /artifacts/
 
 # Add fake entrypoint to satisfy docker compose, it's a common practice
 ENTRYPOINT ["./artifacts/AppRun"]

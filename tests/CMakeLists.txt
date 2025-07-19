@@ -29,6 +29,8 @@ file(
   "*.cpp"
 )
 list(REMOVE_ITEM SOURCES ${CMAKE_SOURCE_DIR}/src/main.cpp)
+# TODO: Removed temporary until stub for calculator_ui.cpp is created
+list(REMOVE_ITEM SOURCES ${CMAKE_SOURCE_DIR}/src/ui/calculator_ui.cpp)
 
 add_executable(
   test_calculator ${SOURCES}
@@ -37,12 +39,11 @@ add_executable(
 
 target_include_directories(
   test_calculator PRIVATE
-  ${CMAKE_SOURCE_DIR}/include
+  ${CMAKE_SOURCE_DIR}/include/core
   ${SPDLOG_H_DIR}
 )
 target_link_libraries(
   test_calculator PRIVATE
-  Qt6::Widgets
   ${SPDLOG_DIR}/libspdlog.a
   gtest_main
 )
