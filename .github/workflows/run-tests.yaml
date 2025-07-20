@@ -61,7 +61,7 @@ jobs:
           path: artifacts/
       - name: Run tests
         run: |
-          tar -xzf artifacts/test-build-${{ github.run_id }}.tar.gz -C artifacts/
+          tar -xzf artifacts/test_calculator_0.0.0.tar.gz -C artifacts/
           if [ -f artifacts/test_calculator ]; then
             echo "Running tests..."
             ./artifacts/test_calculator --gtest_output=xml:artifacts/test-results-${{ github.run_id }}.xml
