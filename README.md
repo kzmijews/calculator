@@ -227,6 +227,21 @@ To create `.deb` package:
 cpack -G DEB -B "./build/deb" --config "./build/Debug/CPackConfig.cmake"
 ```
 
+# Tests
+Basic unit tests are currently provided in the `tests` folder, utilizing the `gtest` framework. The appropriate test binary should be built using CMake. You can run the tests with the following command:
+```bash
+./build/Debug/bin/test_calculator
+```
+Optionally, you can generate a JUnit-compliant report:
+```bash
+./build/Debug/bin/test_calculator --gtest_output=xml:test-results.xml
+```
+To convert the report into a human-readable HTML format, use the provided script:
+```bash
+python3 ./scripts/gtest_to_html.py --input test-results.xml --output test-results.html
+```
+You can also use the `run-tests.yaml` GitHub Actions workflow to execute tests on a selected branch.
+
 # Release
 To release a new version of the Calculator application, first tag the source code you wish to use
 for the release using [semantic versioning](https://semver.org). Then, push the tag to the repository.

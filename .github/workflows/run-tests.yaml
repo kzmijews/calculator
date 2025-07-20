@@ -41,6 +41,10 @@ jobs:
             --build-arg QT_PASSWORD=${{ secrets.QT_PASSWORD }} \
             --build-arg BUILD_TYPE=${{ github.event.inputs.build_type }} \
             --output type=local,dest=./ .
+      - name: Copy report converter scripts
+        run: |
+          mkdir -p ./artifacts/scripts
+          cp scripts/gtest_to_html.py ./artifacts/scripts/
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -77,7 +81,7 @@ jobs:
       - name: Convert test results from JUnit XML format to HTLM
         run: |
           if [ -f artifacts/test-results-${{ github.run_id }}.xml ]; then
-            python3 ../scripts/gtest_to_html.py \
+            python3 ./artifacts/scripts/gtest_to_html.py \
                 --input artifacts/test-results-${{ github.run_id }}.xml \
                 --output artifacts/junit-test-results-${{ github.run_id }}.html
           else
