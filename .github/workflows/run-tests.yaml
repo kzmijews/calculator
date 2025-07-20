@@ -46,7 +46,7 @@ jobs:
         with:
           name: test-build-${{ github.run_id }}
           path: ./artifacts
-          etention-days: 3
+          retention-days: 3
       - name: Clean up Docker image
         run: |
           docker system prune -f || true
@@ -69,8 +69,23 @@ jobs:
             echo "Test binary not found!"
             exit 1
           fi
+      - name: Install JUnit XML to HTLM converter
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip
+          pip3 install lxml jinja2
+      - name: Convert test results from JUnit XML format to HTLM
+        run: |
+          if [ -f artifacts/test-results-${{ github.run_id }}.xml ]; then
+            python3 scripts/gtest_to_html.py \
+                --input artifacts/test-results-${{ github.run_id }}.xml \
+                --output artifacts/junit-test-results-${{ github.run_id }}.html
+          else
+            echo "Test results file not found!"
+            exit 1
+          fi
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
           name: test-results-${{ github.run_id }}
-          path: artifacts/test-results-${{ github.run_id }}.xml
+          path: artifacts/test-results-${{ github.run_id }}*
