@@ -1,7 +1,8 @@
 # Overview
 
 [![ci](https://github.com/kzmijews/calculator/actions/workflows/rel-build.yaml/badge.svg)](https://github.com/kzmijews/calculator/actions/workflows/rel-build.yaml)&nbsp;
-[![Release](https://img.shields.io/github/v/release/kzmijews/calculator.svg)](https://github.com/kzmijews/calculator/releases/latest)
+[![Release](https://img.shields.io/github/v/release/kzmijews/calculator.svg)](https://github.com/kzmijews/calculator/releases/latest)&nbsp;
+[![Tests](https://github.com/kzmijews/calculator/actions/workflows/run-tests.yaml/badge.svg)](https://github.com/kzmijews/calculator/actions/workflows/run-tests.yaml)
 
 > ⚠️ **Warning**: This project is not fully functional yet. Stay tuned for updates!
 

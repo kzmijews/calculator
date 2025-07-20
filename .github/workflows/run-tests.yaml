@@ -83,7 +83,7 @@ jobs:
           if [ -f artifacts/test-results-${{ github.run_id }}.xml ]; then
             python3 ./artifacts/scripts/gtest_to_html.py \
                 --input artifacts/test-results-${{ github.run_id }}.xml \
-                --output artifacts/junit-test-results-${{ github.run_id }}.html
+                --output artifacts/test-results-${{ github.run_id }}.html
           else
             echo "Test results file not found!"
             exit 1
