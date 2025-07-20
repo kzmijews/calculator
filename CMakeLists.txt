@@ -101,13 +101,6 @@ else()
   set(CXXOPTS_H_DIR "$ENV{CXXOPTS_H_DIR}")
   message(STATUS "- CXXOPTS include directory: ${CXXOPTS_H_DIR}")
 endif()
-# -- include directories
-include_directories(
-  ${CMAKE_SOURCE_DIR}/include/core
-  ${CMAKE_SOURCE_DIR}/include/ui
-  ${CXXOPTS_H_DIR}
-  ${SPDLOG_H_DIR}
-)
 # -- source files
 file(
   GLOB SOURCES
@@ -116,14 +109,29 @@ file(
   "src/ui/*.cpp"
 )
 # -- UI files
-set(
-  UIS
-  "src/ui/calculator.ui"
+set(UI_FILE ${CMAKE_SOURCE_DIR}/src/ui/calculator.ui)
+set(GENERATED_UI_HEADER ${CMAKE_SOURCE_DIR}/include/ui/calculator_gen_ui.hpp)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
+get_target_property(Qt6_UIC_EXECUTABLE Qt6::uic IMPORTED_LOCATION)
+message(STATUS "Qt6_UIC_EXECUTABLE = ${Qt6_UIC_EXECUTABLE}")
+add_custom_command(
+    OUTPUT ${GENERATED_UI_HEADER}
+    COMMAND ${Qt6_UIC_EXECUTABLE} -o ${GENERATED_UI_HEADER} ${UI_FILE}
+    MAIN_DEPENDENCY ${UI_FILE}
+    COMMENT "Generating UI header ${GENERATED_UI_HEADER} from ${UI_FILE}"
+)
+add_custom_target(generate_ui_header DEPENDS ${GENERATED_UI_HEADER})
+# -- include directories
+include_directories(
+  ${CMAKE_SOURCE_DIR}/include/core
+  ${CMAKE_SOURCE_DIR}/include/ui
+  ${CXXOPTS_H_DIR}
+  ${SPDLOG_H_DIR}
 )
 # -- executable target
 add_executable(calculator ${SOURCES})
+add_dependencies(calculator generate_ui_header)
 # - link libraries
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
 target_link_libraries(
   calculator PRIVATE
   Qt6::Widgets
@@ -136,7 +144,6 @@ else()
   # -- link linux only libraries
   target_link_libraries(calculator PRIVATE m)
 endif()
-qt_wrap_ui(UI_HEADERS ${UIS})
 
 # - TESTS SETTINGS
 enable_testing()
