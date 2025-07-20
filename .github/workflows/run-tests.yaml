@@ -1,0 +1,85 @@
+# Copyright © 2025 Karol Zmijewski
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this
+# software and associated documentation files (the “Software”), to deal in the Software
+# without restriction, including without limitation the rights to use, copy, modify, merge,
+# publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons
+# to whom the Software is furnished to do so, subject to the following conditions:
+# The above copyright notice and this permission notice shall be included in all copies or
+# substantial portions of the Software.
+# THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+#
+# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+# PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+# FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
+
+name: Run Tests
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Type of build'
+        required: true
+        default: 'Release'
+        type: choice
+        options:
+          - Release
+          - Debug
+      branch:
+        description: 'Branch to test'
+        required: true
+        default: 'main'
+        type: string
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+      - name: Build app using Docker image
+        run: |
+          docker build \
+            -f Dockerfile.test \
+            --build-arg QT_USERNAME=${{ secrets.QT_USERNAME }} \
+            --build-arg QT_PASSWORD=${{ secrets.QT_PASSWORD }} \
+            --build-arg BUILD_TYPE=${{ github.event.inputs.build_type }} \
+            --output type=local,dest=./ .
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-build-${{ github.run_id }}
+          path: ./artifacts
+          etention-days: 3
+      - name: Clean up Docker image
+        run: |
+          docker system prune -f || true
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: test-build-${{ github.run_id }}
+          path: artifacts/
+      - name: Get version number
+        run: echo "VER_NUM=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
+      - name: Run tests
+        run: |
+          tar -xzf artifacts/test_calculator_${VER_NUM}.tar.gz -C artifacts/
+          if [ -f artifacts/test_calculator ]; then
+            echo "Running tests..."
+            ./artifacts/test_calculator --gtest_output=xml:artifacts/test-results-${{ github.run_id }}.xml
+          else
+            echo "Test binary not found!"
+            exit 1
+          fi
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ github.run_id }}
+          path: artifacts/test-results-${{ github.run_id }}.xml
