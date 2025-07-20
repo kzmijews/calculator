@@ -59,11 +59,9 @@ jobs:
         with:
           name: test-build-${{ github.run_id }}
           path: artifacts/
-      - name: Get version number
-        run: echo "VER_NUM=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
       - name: Run tests
         run: |
-          tar -xzf artifacts/test_calculator_${VER_NUM}.tar.gz -C artifacts/
+          tar -xzf artifacts/test-build-${{ github.run_id }}.tar.gz -C artifacts/
           if [ -f artifacts/test_calculator ]; then
             echo "Running tests..."
             ./artifacts/test_calculator --gtest_output=xml:artifacts/test-results-${{ github.run_id }}.xml
