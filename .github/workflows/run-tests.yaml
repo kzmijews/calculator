@@ -27,23 +27,16 @@ on:
         options:
           - Release
           - Debug
-      branch:
-        description: 'Branch to test'
-        required: true
-        default: 'main'
-        type: string
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.branch }}
       - name: Build app using Docker image
         run: |
           docker build \
-            -f Dockerfile.test \
+            -f Dockerfile.build \
             --build-arg QT_USERNAME=${{ secrets.QT_USERNAME }} \
             --build-arg QT_PASSWORD=${{ secrets.QT_PASSWORD }} \
             --build-arg BUILD_TYPE=${{ github.event.inputs.build_type }} \
