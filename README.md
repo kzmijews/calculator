@@ -46,6 +46,7 @@ Simplified BNF Grammar of the Calculator:
 <primary>    ::= <number>
               | ( <expression> )
               | - <primary>
+              | sqrt <primary>
 ```
 
 This grammar allows for arithmetic expressions using addition, subtraction, multiplication,
