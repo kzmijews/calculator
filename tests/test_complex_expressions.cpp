@@ -21,7 +21,7 @@
 #include "calculator.hpp"
 
 namespace kz::calc::core {
-    class CalculatorTest : public ::testing::Test {
+    class CalculatorComplexTest : public ::testing::Test {
     protected:
         Calculator calculator;
 
@@ -31,29 +31,9 @@ namespace kz::calc::core {
         }
     };
 
-    TEST_F(CalculatorTest, SimpleAddition) {
-        calculator << "2.0 + 3.0;";
-        EXPECT_DOUBLE_EQ(calculator.expression(), 5.0);
+    // Subtraction - basic tests
+    TEST_F(CalculatorComplexTest, OperationOrderExpression) {
+        calculator << "2.0 + 3.0 * 4.0 - 5.0 / 5.0 - 1.0;";
+        EXPECT_DOUBLE_EQ(calculator.expression(), 12.0);
     }
-
-    TEST_F(CalculatorTest, SimpleSubtraction) {
-        calculator << "5.0 - 2.0;";
-        EXPECT_DOUBLE_EQ(calculator.expression(), 3.0);
-    }
-
-    TEST_F(CalculatorTest, SimpleMultiplication) {
-        calculator << "4.0 * 2.0;";
-        EXPECT_DOUBLE_EQ(calculator.expression(), 8.0);
-    }
-
-    TEST_F(CalculatorTest, SimpleDivision) {
-        calculator << "8.0 / 2.0;";
-        EXPECT_DOUBLE_EQ(calculator.expression(), 4.0);
-    }
-
-    TEST_F(CalculatorTest, ComplexExpression) {
-        calculator << "2.0 + 3.0 * 4.0 - 5.0 / 5.0;";
-        EXPECT_DOUBLE_EQ(calculator.expression(), 13.0);
-    }
-
 } // namespace kz::calc::core
