@@ -35,6 +35,7 @@ namespace kz::calc::core {
         MULTIPLY = '*',
         DIVIDE = '/',
         POWER = '^',
+        SQRT = 's',
         LEFT_PAREN = '(',
         RIGHT_PAREN = ')',
         END = ';',
@@ -55,6 +56,13 @@ namespace kz::calc::core {
          *             If the sign is not recognized, the token type will be set to UNKNOWN.
          */
         Token(char sign);
+        /**
+         * Constructor for Token class.
+         * Initializes a token with a specific opcode as a string.
+         * @param opcode The string representing the token type (e.g., "sqrt", "pi").
+         *               This constructor is used for special tokens that are not single characters.
+         */
+        Token(std::string opcode);
         /**
          * Constructor for Token class.
          * Initializes a token with a specific type and an optional value.

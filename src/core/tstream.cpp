@@ -50,8 +50,16 @@ namespace kz::calc::core {
             case ';': case 'q':
                 return Token(sign);
             default:
-                spdlog::warn("Token '{}' was not added to stream support list", sign);
-                return Token(TokenType::UNKNOWN);
+                std::string ident;
+                ident += sign;
+                while (std::isalnum(expr_stream.peek())) {
+                    ident += expr_stream.get();
+                }
+                Token complex_token = Token(ident);
+                if (complex_token.get_type() == TokenType::UNKNOWN) {
+                    spdlog::trace("Token '{}' was not added to stream support list", ident);
+                }
+                return complex_token;
         }
     }
 
