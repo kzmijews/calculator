@@ -44,11 +44,13 @@ namespace kz::calc::core {
                 return Token(TokenType::NUMBER, value);
             }
             case '+': case '-':
+            case '^':
             case '*': case '/':
             case '(': case ')':
             case ';': case 'q':
                 return Token(sign);
             default:
+                spdlog::warn("Token '{}' was not added to stream support list", sign);
                 return Token(TokenType::UNKNOWN);
         }
     }

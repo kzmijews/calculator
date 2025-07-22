@@ -46,6 +46,7 @@ namespace kz::calc::core {
         is_operator |= type == TokenType::MINUS;
         is_operator |= type == TokenType::MULTIPLY;
         is_operator |= type == TokenType::DIVIDE;
+        is_operator |= type == TokenType::POWER;
         return is_operator;
     }
 
