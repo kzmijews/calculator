@@ -36,9 +36,12 @@ Simplified BNF Grammar of the Calculator:
               | <expression> + <term>
               | <expression> - <term>
 
-<term>       ::= <primary>
-              | <primary> * <term>
-              | <primary> / <term>
+<term>       ::= <power>
+              | <term> * <power>
+              | <term> / <power>
+
+<power>      ::= <primary>
+              | <primary> ^ <power>
 
 <primary>    ::= <number>
               | ( <expression> )

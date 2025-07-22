@@ -36,10 +36,10 @@ namespace kz::calc::core {
             Token token = ts.pop();
             TokenType token_type = token.get_type();
             if (token_type == TokenType::PLUS) {
-                spdlog::trace("e: +");
+                spdlog::trace("exp: +");
                 lvalue += term();
             } else if (token_type == TokenType::MINUS) {
-                spdlog::trace("e: -");
+                spdlog::trace("exp: -");
                 lvalue -= term();
             } else if (token_type == TokenType::END) {
                 // End of expression, return the result
@@ -48,7 +48,8 @@ namespace kz::calc::core {
             } else if (token_type == TokenType::UNKNOWN) {
                 // Handle unknown token
                 throw InvalidExpression(
-                    "Unknown token encountered: '" + std::to_string(etov(token_type)) + "'"
+                    "Unknown token encountered: '" +
+                    std::to_string(static_cast<char>(token_type)) + "'"
                 );
             } else {
                 // If the token is not an operator, push it back to the stream
@@ -62,16 +63,16 @@ namespace kz::calc::core {
     }
 
     double Calculator::term() {
-        double lvalue = primary();
+        double lvalue = power();
         while(true) {
             Token token = ts.pop();
             TokenType token_type = token.get_type();
             if (token_type == TokenType::MULTIPLY) {
-                spdlog::trace("t: *");
-                lvalue *= primary();
+                spdlog::trace("ter: *");
+                lvalue *= power();
             } else if (token_type == TokenType::DIVIDE) {
-                spdlog::trace("t: /");
-                double divisor = primary();
+                spdlog::trace("ter: /");
+                double divisor = power();
                 if (divisor == 0) {
                     throw InvalidExpression("Division by zero is not allowed.");
                 }
@@ -86,14 +87,32 @@ namespace kz::calc::core {
         return lvalue;
     }
 
+    double Calculator::power() {
+        double lvalue = primary();
+        while (true) {
+            Token token = ts.pop();
+            TokenType token_type = token.get_type();
+            if (token_type == TokenType::POWER) {
+                spdlog::trace("pow: ^");
+                lvalue = std::pow(lvalue, primary());
+            } else {
+                // If the token is not an operator, push it back to the stream
+                // for further processing
+                ts.push(token);
+                break;
+            }
+        }
+        return lvalue;
+    }
+
     double Calculator::primary() {
         Token token = ts.pop();
         TokenType token_type = token.get_type();
         if (token_type == TokenType::NUMBER) {
-            spdlog::trace("p: {}", token.get_value());
+            spdlog::trace("pri: {}", token.get_value());
             return token.get_value();
         } else if (token_type == TokenType::LEFT_PAREN) {
-            spdlog::trace("p: (");
+            spdlog::trace("pri: (");
             double lvalue = expression();
             // Expecting a right parenthesis
             token = ts.pop();
@@ -101,10 +120,10 @@ namespace kz::calc::core {
             if (token_type != TokenType::RIGHT_PAREN) {
                 throw InvalidExpression("Expected right parenthesis: ')'");
             }
-            spdlog::trace("p: )");
+            spdlog::trace("pri: )");
             return lvalue;
         } else if (token_type == TokenType::MINUS) {
-            spdlog::trace("p: -");
+            spdlog::trace("pri: -");
             return -primary();
         } else if (token_type == TokenType::QUIT) {
             throw EndOfExecution();

@@ -52,6 +52,14 @@ namespace kz::calc::core {
          */
         double expression();
         /**
+         * Parse power operation from the token stream.
+         * This method processes the power operation (^) in the expression.
+         * It handles the exponentiation operation and returns the result as a double.
+         * @return The result of the power operation as a double.
+         * @throws kz::calc::core::InvalidExpression If the power operation is invalid or
+         */
+        double power();
+        /**
          * Parses a term from the token stream.
          * A term is defined as a factor followed by zero or more multiplication or division operations.
          * @return The result of the term as a double.
