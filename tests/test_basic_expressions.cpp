@@ -31,6 +31,11 @@ namespace kz::calc::core {
         }
     };
 
+    // Read number - basic tests
+    TEST_F(CalculatorBasicTest, SimpleNumberRead) {
+        calculator << "01234.01234;";
+        EXPECT_DOUBLE_EQ(calculator.expression(), 1234.01234);
+    }
     // Addition - basic tests
     TEST_F(CalculatorBasicTest, SimpleDoubleAddition) {
         calculator << "1.0 + 2.0;";
