@@ -36,6 +36,7 @@ namespace kz::calc::core {
         calculator << "01234.01234;";
         EXPECT_DOUBLE_EQ(calculator.expression(), 1234.01234);
     }
+
     // Addition - basic tests
     TEST_F(CalculatorBasicTest, SimpleDoubleAddition) {
         calculator << "1.0 + 2.0;";
@@ -139,4 +140,15 @@ namespace kz::calc::core {
         calculator << "-3.0 / 2.0;";
         EXPECT_DOUBLE_EQ(calculator.expression(), -1.5);
     }
+
+    // Power - basic tests
+    TEST_F(CalculatorBasicTest, SimplePower) {
+        calculator << "2 ^ 3;";
+        EXPECT_DOUBLE_EQ(calculator.expression(), 8.0);
+    }
+
+     TEST_F(CalculatorBasicTest, SimpleNegPower) {
+        calculator << "-2 ^ -3;";
+        EXPECT_DOUBLE_EQ(calculator.expression(), -0.125);
+     }
 } // namespace kz::calc::core
