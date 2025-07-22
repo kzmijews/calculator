@@ -151,4 +151,10 @@ namespace kz::calc::core {
         calculator << "-2 ^ -3;";
         EXPECT_DOUBLE_EQ(calculator.expression(), -0.125);
      }
+
+     // Square root - basic tests
+    TEST_F(CalculatorBasicTest, SimpleSqrt) {
+        calculator << "sqrt 4;";
+        EXPECT_DOUBLE_EQ(calculator.expression(), 2.0);
+    }
 } // namespace kz::calc::core

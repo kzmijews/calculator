@@ -53,7 +53,7 @@ namespace kz::calc::ui {
         } else if (text == "pi") {
             result_browser->insertPlainText(QString::number(M_PI));
         } else if (text == "sqrt") {
-            result_browser->insertPlainText("sqrt(");
+            result_browser->insertPlainText("sqrt ");
         } else if (text == "<<") {
             QString current_text = result_browser->toPlainText();
             if (!current_text.isEmpty()) {
