@@ -125,6 +125,13 @@ namespace kz::calc::core {
         } else if (token_type == TokenType::MINUS) {
             spdlog::trace("pri: -");
             return -primary();
+        } else if (token_type == TokenType::SQRT) {
+            spdlog::trace("pri: √");
+            double value = primary();
+            if (value < 0) {
+                throw InvalidExpression("Square root of negative number is not allowed.");
+            }
+            return std::sqrt(value);
         } else if (token_type == TokenType::QUIT) {
             throw EndOfExecution();
         } else if (token_type == TokenType::END) {

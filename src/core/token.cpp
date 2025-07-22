@@ -19,6 +19,7 @@
 
 // standard library headers
 #include <iostream>
+#include <math.h>
 // app headers
 #include "token.hpp"
 
@@ -26,6 +27,19 @@ namespace kz::calc::core {
     Token::Token(char sign): type(static_cast<TokenType>(sign)), value(0.0) {
         if (is_number()) {
             value = static_cast<double>(sign - '0');
+        }
+    }
+
+    Token::Token(std::string opcode) {
+        if (opcode == "sqrt") {
+            type = TokenType::SQRT;
+            value = 0.0; // No value for sqrt token
+        } else if (opcode == "pi") {
+            type = TokenType::NUMBER;
+            value = M_PI; // Set value to pi
+        } else {
+            type = TokenType::UNKNOWN;
+            value = 0.0; // Default value for unknown tokens
         }
     }
 
@@ -47,6 +61,7 @@ namespace kz::calc::core {
         is_operator |= type == TokenType::MULTIPLY;
         is_operator |= type == TokenType::DIVIDE;
         is_operator |= type == TokenType::POWER;
+        is_operator |= type == TokenType::SQRT;
         return is_operator;
     }
 
