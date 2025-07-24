@@ -27,6 +27,7 @@ namespace kz::calc::core {
     class Calculator {
     private:
         TokenStream ts;
+        void validate_operand(const std::string& op_symbol);
     public:
         /**
          * Constructor for the Calculator class.
