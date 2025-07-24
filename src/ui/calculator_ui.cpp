@@ -40,11 +40,11 @@ namespace kz::calc::ui {
                 result_browser->insertPlainText(QString::number(result));
                 spdlog::info("[umode] Result: {} = {}", expression, result);
             } catch (const kz::calc::core::InvalidExpression& e) {
-                result_browser->setText("ERR: invalid/unsupported");
+                result_browser->setText("ERR: inv exp");
                 spdlog::error("[umode] Invalid expression encountered: {}", e.what());
                 calculator.reset();
             } catch (const std::runtime_error& e) {
-                result_browser->setText("ERR: unexpected error");
+                result_browser->setText("ERR: unexp");
                 spdlog::error("[umode] Runtime error: {}", e.what());
                 calculator.reset();
             }

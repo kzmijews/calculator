@@ -60,6 +60,15 @@ namespace kz::calc::core {
          */
         double power();
         /**
+         * Parses a postfix operation from the token stream.
+         * This method processes the postfix operation (e.g., factorial) in the expression.
+         * It handles the postfix operation and returns the result as a double.
+         * @return The result of the postfix operation as a double.
+         * @throws kz::calc::core::InvalidExpression If the postfix operation is invalid or
+         * unsupported.
+         */
+        double postfix();
+        /**
          * Parses a term from the token stream.
          * A term is defined as a factor followed by zero or more multiplication or division operations.
          * @return The result of the term as a double.

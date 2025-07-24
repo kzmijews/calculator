@@ -25,6 +25,7 @@
 #include "exceptions.hpp"
 #include "calculator.hpp"
 #include "tstream.hpp"
+#include "operations.hpp"
 // external library headers
 #include "spdlog/spdlog.h"
 
@@ -52,7 +53,7 @@ namespace kz::calc::core {
                     std::to_string(static_cast<char>(token_type)) + "'"
                 );
             } else {
-                // If the token is not an operator, push it back to the stream
+                // If the token is not a + or - operator, push it back to the stream
                 // for further processing
                 ts.push(token);
                 break;
@@ -78,7 +79,7 @@ namespace kz::calc::core {
                 }
                 lvalue /= divisor;
             } else {
-                // If the token is not an operator, push it back to the stream
+                // If the token is not a * or / operator, push it back to the stream
                 // for the further processing
                 ts.push(token);
                 break;
@@ -88,21 +89,38 @@ namespace kz::calc::core {
     }
 
     double Calculator::power() {
-        double lvalue = primary();
+        double lvalue = postfix();
         while (true) {
             Token token = ts.pop();
             TokenType token_type = token.get_type();
             if (token_type == TokenType::POWER) {
                 spdlog::trace("pow: ^");
-                lvalue = std::pow(lvalue, primary());
+                lvalue = std::pow(lvalue, postfix());
             } else {
-                // If the token is not an operator, push it back to the stream
+                // If the token is not a ^ operator, push it back to the stream
                 // for further processing
                 ts.push(token);
                 break;
             }
         }
         return lvalue;
+    }
+
+    double Calculator::postfix() {
+        double value = primary();
+        while (true) {
+            Token token = ts.pop();
+            if (token.get_type() == TokenType::FACTORIAL) {
+                spdlog::trace("post: !");
+                value = Operations::factorial(value);
+            } else {
+                // If the token is not a ! operator, push it back to the stream
+                // for further processing
+                ts.push(token);
+                break;
+            }
+        }
+        return value;
     }
 
     double Calculator::primary() {
@@ -138,7 +156,7 @@ namespace kz::calc::core {
             throw EndOfExecution();
         }
         throw InvalidExpression(
-            "Unexpected token: '" + std::to_string(etov(token_type)) + "'"
+            "Unexpected token: '" + std::string(1, static_cast<char>(etov(token_type))) + "'"
         );
     }
 } // namespace kz::calc::core

@@ -4,8 +4,6 @@
 [![Tests](https://github.com/kzmijews/calculator/actions/workflows/run-tests.yaml/badge.svg)](https://github.com/kzmijews/calculator/actions/workflows/run-tests.yaml)&nbsp;
 [![Release](https://img.shields.io/github/v/release/kzmijews/calculator.svg)](https://github.com/kzmijews/calculator/releases/latest)
 
-> ⚠️ **Warning**: This project is not fully functional yet. Stay tuned for updates!
-
 This implementation of the Calculator App uses a **Context-Free Grammar (CFG)** to define
 the structure of valid expressions and instructions. **CFG** is a formal set of production
 rules that describe how expressions in a language can be formed.
