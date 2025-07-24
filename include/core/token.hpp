@@ -35,6 +35,7 @@ namespace kz::calc::core {
         MULTIPLY = '*',
         DIVIDE = '/',
         POWER = '^',
+        FACTORIAL = '!',
         SQRT = 's',
         LEFT_PAREN = '(',
         RIGHT_PAREN = ')',

@@ -32,8 +32,8 @@ namespace kz::calc::core {
     };
 
     TEST_F(CalculatorComplexTest, OperationOrderExpression) {
-        calculator << "2.0 + 3.0 * 2.0 ^ sqrt 4.0 - 5.0 / 5.0 - 1.0;";
-        EXPECT_DOUBLE_EQ(calculator.expression(), 12.0);
+        calculator << "3.0! ^ 2.0 * 2.0 + 2.0 + 3.0 * 2.0 ^ sqrt 4.0 - 5.0 / 5.0 - 1.0;";
+        EXPECT_DOUBLE_EQ(calculator.expression(), 84.0);
     }
 
     TEST_F(CalculatorComplexTest, BracketSupportExpression) {
@@ -79,5 +79,10 @@ namespace kz::calc::core {
     TEST_F(CalculatorComplexTest, SeqSqrtExpression) {
         calculator << "sqrt(sqrt(sqrt(256)));";
         EXPECT_DOUBLE_EQ(calculator.expression(), 2.0);
+    }
+
+    TEST_F(CalculatorComplexTest, SeqFactorialExpression) {
+        calculator << "3!!;";
+        EXPECT_DOUBLE_EQ(calculator.expression(), 720.0);
     }
 } // namespace kz::calc::core

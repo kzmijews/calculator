@@ -157,4 +157,10 @@ namespace kz::calc::core {
         calculator << "sqrt 4;";
         EXPECT_DOUBLE_EQ(calculator.expression(), 2.0);
     }
+
+    // Factorial - basic tests
+    TEST_F(CalculatorBasicTest, SimpleFactorial) {
+        calculator << "5!;";
+        EXPECT_DOUBLE_EQ(calculator.expression(), 120.0);
+    }
 } // namespace kz::calc::core

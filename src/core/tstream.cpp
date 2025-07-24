@@ -44,7 +44,7 @@ namespace kz::calc::core {
                 return Token(TokenType::NUMBER, value);
             }
             case '+': case '-':
-            case '^':
+            case '^': case '!':
             case '*': case '/':
             case '(': case ')':
             case ';': case 'q':
@@ -57,7 +57,7 @@ namespace kz::calc::core {
                 }
                 Token complex_token = Token(ident);
                 if (complex_token.get_type() == TokenType::UNKNOWN) {
-                    spdlog::trace("Token '{}' was not added to stream support list", ident);
+                    spdlog::error("Token '{}' was not added to stream support list", ident);
                 }
                 return complex_token;
         }
