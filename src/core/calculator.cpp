@@ -30,6 +30,14 @@
 #include "spdlog/spdlog.h"
 
 namespace kz::calc::core {
+    void Calculator::validate_operand(const std::string& op_symbol) {
+        Token next = ts.peek(true); // true = skip whitespace (your design)
+        if (next.is_end()) {
+            spdlog::trace("Unexpected end of expression after {} operator", op_symbol);
+            throw InvalidExpression("Illegal token ';' after operator '" + op_symbol + "'");
+        }
+    }
+
     double Calculator::expression() {
         spdlog::trace("Starting expression evaluation.");
         double lvalue = term(); // Start with the first term
@@ -38,17 +46,11 @@ namespace kz::calc::core {
             TokenType token_type = token.get_type();
             if (token_type == TokenType::PLUS) {
                 spdlog::trace("exp: +");
-                if (ts.peek(true).is_end()) {
-                    spdlog::trace("Unexpected end of expression after + operator");
-                    throw InvalidExpression("Illegal token ';' after operator '+'");
-                }
+                validate_operand("+");
                 lvalue += term();
             } else if (token_type == TokenType::MINUS) {
                 spdlog::trace("exp: -");
-                if (ts.peek(true).is_end()) {
-                    spdlog::trace("Unexpected end of expression after - operator");
-                    throw InvalidExpression("Illegal token ';' after operator '-'");
-                }
+                validate_operand("-");
                 lvalue -= term();
             } else if (token_type == TokenType::UNKNOWN) {
                 // Handle unknown token
@@ -74,17 +76,11 @@ namespace kz::calc::core {
             TokenType token_type = token.get_type();
             if (token_type == TokenType::MULTIPLY) {
                 spdlog::trace("ter: *");
-                if (ts.peek(true).is_end()) {
-                    spdlog::trace("Unexpected end of expression after * operator");
-                    throw InvalidExpression("Illegal token ';' after operator '*'");
-                }
+                validate_operand("*");
                 lvalue *= power();
             } else if (token_type == TokenType::DIVIDE) {
                 spdlog::trace("ter: /");
-                if (ts.peek(true).is_end()) {
-                    spdlog::trace("Unexpected end of expression after / operator");
-                    throw InvalidExpression("Illegal token ';' after operator '/'");
-                }
+                validate_operand("/");
                 double divisor = power();
                 if (divisor == 0) {
                     throw InvalidExpression("Division by zero is not allowed.");
@@ -107,10 +103,7 @@ namespace kz::calc::core {
             TokenType token_type = token.get_type();
             if (token_type == TokenType::POWER) {
                 spdlog::trace("pow: ^");
-                if (ts.peek(true).is_end()) {
-                    spdlog::trace("Unexpected end of expression after ^ operator");
-                    throw InvalidExpression("Illegal token ';' after operator '^'");
-                }
+                validate_operand("^");
                 lvalue = std::pow(lvalue, postfix());
             } else {
                 // If the token is not a ^ operator, push it back to the stream
