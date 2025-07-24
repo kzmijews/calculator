@@ -40,13 +40,17 @@ Simplified BNF Grammar of the Calculator:
               | <term> * <power>
               | <term> / <power>
 
-<power>      ::= <primary>
-              | <primary> ^ <power>
+<power>      ::= <postfix>
+              | <postfix> ^ <power>
+
+<postfix>    ::= <primary>
+              | <postfix> !
 
 <primary>    ::= <number>
               | ( <expression> )
               | - <primary>
               | sqrt <primary>
+
 ```
 
 This grammar allows for arithmetic expressions using addition, subtraction, multiplication,
