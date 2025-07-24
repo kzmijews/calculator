@@ -38,19 +38,23 @@ namespace kz::calc::core {
             TokenType token_type = token.get_type();
             if (token_type == TokenType::PLUS) {
                 spdlog::trace("exp: +");
+                if (ts.peek(true).is_end()) {
+                    spdlog::trace("Unexpected end of expression after + operator");
+                    throw InvalidExpression("Illegal token ';' after operator '+'");
+                }
                 lvalue += term();
             } else if (token_type == TokenType::MINUS) {
                 spdlog::trace("exp: -");
+                if (ts.peek(true).is_end()) {
+                    spdlog::trace("Unexpected end of expression after - operator");
+                    throw InvalidExpression("Illegal token ';' after operator '-'");
+                }
                 lvalue -= term();
-            } else if (token_type == TokenType::END) {
-                // End of expression, return the result
-                spdlog::trace("End of expression reached.");
-                break;
             } else if (token_type == TokenType::UNKNOWN) {
                 // Handle unknown token
                 throw InvalidExpression(
                     "Unknown token encountered: '" +
-                    std::to_string(static_cast<char>(token_type)) + "'"
+                    std::string(1, static_cast<char>(token_type)) + "'"
                 );
             } else {
                 // If the token is not a + or - operator, push it back to the stream
@@ -70,9 +74,17 @@ namespace kz::calc::core {
             TokenType token_type = token.get_type();
             if (token_type == TokenType::MULTIPLY) {
                 spdlog::trace("ter: *");
+                if (ts.peek(true).is_end()) {
+                    spdlog::trace("Unexpected end of expression after * operator");
+                    throw InvalidExpression("Illegal token ';' after operator '*'");
+                }
                 lvalue *= power();
             } else if (token_type == TokenType::DIVIDE) {
                 spdlog::trace("ter: /");
+                if (ts.peek(true).is_end()) {
+                    spdlog::trace("Unexpected end of expression after / operator");
+                    throw InvalidExpression("Illegal token ';' after operator '/'");
+                }
                 double divisor = power();
                 if (divisor == 0) {
                     throw InvalidExpression("Division by zero is not allowed.");
@@ -95,6 +107,10 @@ namespace kz::calc::core {
             TokenType token_type = token.get_type();
             if (token_type == TokenType::POWER) {
                 spdlog::trace("pow: ^");
+                if (ts.peek(true).is_end()) {
+                    spdlog::trace("Unexpected end of expression after ^ operator");
+                    throw InvalidExpression("Illegal token ';' after operator '^'");
+                }
                 lvalue = std::pow(lvalue, postfix());
             } else {
                 // If the token is not a ^ operator, push it back to the stream
@@ -153,7 +169,7 @@ namespace kz::calc::core {
         } else if (token_type == TokenType::QUIT) {
             throw EndOfExecution();
         } else if (token_type == TokenType::END) {
-            throw EndOfExecution();
+            throw EndOfExpression();
         }
         throw InvalidExpression(
             "Unexpected token: '" + std::string(1, static_cast<char>(etov(token_type))) + "'"

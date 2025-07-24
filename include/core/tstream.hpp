@@ -54,9 +54,10 @@ namespace kz::calc::core {
         void push(Token token);
         /**
          * Peeks at the next token in the stream without removing it.
+         * @param skip_whitespaces If true, skips whitespace characters before returning the next token.
          * @return The next token in the stream.
          */
-        Token peek();
+        Token peek(bool skip_whitespaces);
         /**
          * Clears the token stream and resets the buffer.
          * This method clears the internal stringstream and resets the buffer state.

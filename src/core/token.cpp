@@ -62,6 +62,7 @@ namespace kz::calc::core {
         is_operator |= type == TokenType::DIVIDE;
         is_operator |= type == TokenType::POWER;
         is_operator |= type == TokenType::SQRT;
+        is_operator |= type == TokenType::FACTORIAL;
         return is_operator;
     }
 

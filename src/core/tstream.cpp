@@ -75,8 +75,17 @@ namespace kz::calc::core {
         }
     }
 
-    Token TokenStream::peek() {
-        if (expr_stream.peek()) {
+    Token TokenStream::peek(bool skip_whitespaces) {
+        if (skip_whitespaces) {
+            // Skip whitespace characters in the stream
+            while (std::isspace(expr_stream.peek())) {
+                expr_stream.get();
+            }
+        }
+        // Peek at the next character in the stream without removing it
+        if (expr_stream.eof()) {
+            return Token(TokenType::END); // Return END token if the stream is empty
+        } else if (expr_stream.peek()) {
             return Token(expr_stream.peek());
         }
         return Token(TokenType::UNKNOWN);
